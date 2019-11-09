@@ -40,6 +40,11 @@ class UsersController extends AbstractController
         return $this->statusCode;
     }
 
+    public function respondNotFound($message = 'Not found!')
+    {
+        return $this->setStatusCode(404)->respondWithErrors($message);
+    }
+
     public function respondCreated($data = [])
     {
         return $this->setStatusCode(201)->respond($data);
@@ -135,6 +140,33 @@ class UsersController extends AbstractController
 
 
         $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->respondCreated($userRepository->transform($user));
+    }
+
+    /**
+     * @Route("/users/remove", name="users_remove", methods="POST")
+     */
+    public function removeUser(Request $request, UserRepository $userRepository)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        if (! $request) {
+            return $this->respondValidationError('Please provide a valid request!');
+        }
+
+        if (! $request->get('id')) {
+            return $this->respondValidationError('Please provide id!');
+        }
+
+        $user = $userRepository->find($request->get('id'));
+
+        if (! $user) {
+            return $this->respondNotFound();
+        }
+
+        $entityManager->remove($user);
+
         $entityManager->flush();
 
         return $this->respondCreated($userRepository->transform($user));
