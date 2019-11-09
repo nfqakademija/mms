@@ -19,6 +19,18 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function transform(User $user)
+    {
+        return [
+            'id'    => (int) $user->getId(),
+            'name' => (string) $user->getName(),
+            'surname' => (string) $user->getSurname(),
+            'url' => (string) $user->getUrl(),
+            'file_name' => (string) $user->getFileName(),
+            'approve' => (int) $user->getApprove()
+        ];
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
