@@ -171,4 +171,49 @@ class UsersController extends AbstractController
 
         return $this->respondCreated($userRepository->transform($user));
     }
+
+    /**
+     * @Route("/users/update", name="users_update", methods="POST")
+     */
+    public function updateUser(Request $request, UserRepository $userRepository)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        if (! $request) {
+            return $this->respondValidationError('Please provide a valid request!');
+        }
+
+        if (! $request->get('id')) {
+            return $this->respondValidationError('Please provide id!');
+        }
+
+        $user = $userRepository->find($request->get('id'));
+
+        if (! $user) {
+            return $this->respondNotFound();
+        }
+
+        if ($request->get('name')) {
+            $user->setName($request->get('name'));
+        }
+        if ($request->get('surname')) {
+            $user->setSurname($request->get('surname'));
+        }
+        if ($request->get('email')) {
+            $user->setEmail($request->get('email'));
+        }
+        if ($request->get('url')) {
+            $user->setUrl($request->get('url'));
+        }
+        if ($request->get('file_name')) {
+            $user->setFileName($request->get('file_name'));
+        }
+        if ($request->get('approve')) {
+            $user->setApprove($request->get('approve'));
+        }
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->respondCreated($userRepository->transform($user));
+    }
 }
