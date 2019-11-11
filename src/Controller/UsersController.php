@@ -101,10 +101,8 @@ class UsersController extends AbstractController
         return new Response($jsonContent);
     }
 
-
-
     /**
-     * @Route("/users/create", name="users_create", methods="POST")
+     * @Route("/users/create", name="users_create", methods="PUT")
      */
     public function createUser(Request $request, UserRepository $userRepository)
     {
@@ -146,7 +144,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/users/remove", name="users_remove", methods="POST")
+     * @Route("/users/remove", name="users_remove", methods="DELETE")
      */
     public function removeUser(Request $request, UserRepository $userRepository)
     {
@@ -173,7 +171,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/users/update", name="users_update", methods="POST")
+     * @Route("/users/update", name="users_update", methods="UPDATE")
      */
     public function updateUser(Request $request, UserRepository $userRepository)
     {
