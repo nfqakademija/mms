@@ -82,7 +82,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/users/getall", name="users_getall", methods="GET")
+     * @Route("/api/users/getall", name="users_getall", methods="GET")
      */
     public function getUsers()
     {
@@ -101,8 +101,31 @@ class UsersController extends AbstractController
         return new Response($jsonContent);
     }
 
+
     /**
-     * @Route("/users/create", name="users_create", methods="PUT")
+     * @Route("/api/users/get", name="users_get", methods="GET")
+     */
+    public function getOneUser(Request $request, UserRepository $userRepository)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        if (! $request) {
+            return $this->respondValidationError('Please provide a valid request!');
+        }
+
+        if (! $request->get('id')) {
+            return $this->respondValidationError('Please provide id!');
+        }
+
+        $user = $userRepository->find($request->get('id'));
+
+        if (! $user) {
+            return $this->respondNotFound();
+        }
+        return $this->respondCreated($userRepository->transform($user));
+    }
+
+    /**
+     * @Route("/api/users/create", name="users_create", methods="PUT")
      */
     public function createUser(Request $request, UserRepository $userRepository)
     {
@@ -144,7 +167,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/users/remove", name="users_remove", methods="DELETE")
+     * @Route("/api/users/remove", name="users_remove", methods="DELETE")
      */
     public function removeUser(Request $request, UserRepository $userRepository)
     {
@@ -171,7 +194,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/users/update", name="users_update", methods="UPDATE")
+     * @Route("/api/users/update", name="users_update", methods="PUT")
      */
     public function updateUser(Request $request, UserRepository $userRepository)
     {
