@@ -82,7 +82,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/getall", name="users_getall", methods="GET")
+     * @Route("/api/users", name="users_getall", methods="GET")
      */
     public function getUsers()
     {
@@ -103,7 +103,7 @@ class UsersController extends AbstractController
 
 
     /**
-     * @Route("/api/users/get", name="users_get", methods="GET")
+     * @Route("/api/users/{id}", name="users_get", methods="GET")
      */
     public function getOneUser(Request $request, UserRepository $userRepository)
     {
@@ -125,7 +125,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/create", name="users_create", methods="PUT")
+     * @Route("/api/users", name="users_create", methods="PUT")
      */
     public function createUser(Request $request, UserRepository $userRepository)
     {
@@ -167,7 +167,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/remove", name="users_remove", methods="DELETE")
+     * @Route("/api/users/{id}", name="users_remove", methods="DELETE")
      */
     public function removeUser(Request $request, UserRepository $userRepository)
     {
@@ -194,7 +194,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/update", name="users_update", methods="PUT")
+     * @Route("/api/users", name="users_update", methods="PATCH")
      */
     public function updateUser(Request $request, UserRepository $userRepository)
     {
