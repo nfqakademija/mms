@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class UsersController extends AbstractController
 {
@@ -81,6 +82,18 @@ class UsersController extends AbstractController
         return $this->setStatusCode(401)->respondWithErrors($message);
     }
 
+    public function transformToJSON(User $user)
+    {
+        return [
+            'id'    => (int) $user->getId(),
+            'name' => (string) $user->getName(),
+            'surname' => (string) $user->getSurname(),
+            'url' => (string) $user->getUrl(),
+            'file_name' => (string) $user->getFileName(),
+            'approve' => (int) $user->getApprove()
+        ];
+    }
+
     /**
      * @Route("/api/users", name="users_getall", methods="GET")
      */
@@ -91,110 +104,56 @@ class UsersController extends AbstractController
         // get all data from database
         $user = $entityManager->getRepository(User::class)->findAll();
 
-        // objects to json format
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $jsonContent = $serializer->serialize($user, 'json');
-
+        $jsonContent = $this->get('serializer')->serialize($user, 'json');
         return new Response($jsonContent);
     }
 
 
     /**
-     * @Route("/api/users/{id}", name="users_get", methods="GET")
+     * @Route("/api/users/{id}", defaults={"_format"="json"}, name="users_get", methods="GET")
      */
-    public function getOneUser(Request $request, UserRepository $userRepository)
+    public function getOneUser(User $user)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        if (! $request) {
-            return $this->respondValidationError('Please provide a valid request!');
-        }
-
-        if (! $request->get('id')) {
-            return $this->respondValidationError('Please provide id!');
-        }
-
-        $user = $userRepository->find($request->get('id'));
-
-        if (! $user) {
-            return $this->respondNotFound();
-        }
-        return $this->respondCreated($userRepository->transform($user));
+        return new Response($this->get('serializer')->serialize($user, 'json'));
     }
 
     /**
-     * @Route("/api/users", name="users_create", methods="PUT")
+     * @Route("/api/users", defaults={"_format"="json"}, name="users_create", methods="PUT")
      */
     public function createUser(Request $request, UserRepository $userRepository)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        if (! $request) {
-            return $this->respondValidationError('Please provide a valid request!');
-        }
-
-        if (! $request->get('name')) {
-            return $this->respondValidationError('Please provide a name!');
-        }
-
-        if (! $request->get('surname')) {
-            return $this->respondValidationError('Please provide a surname!');
-        }
-        if (! $request->get('email')) {
-            return $this->respondValidationError('Please provide a email!');
-        }
 
         $user = new User();
         $user->setName($request->get('name'));
         $user->setSurname($request->get('surname'));
         $user->setEmail($request->get('email'));
         $user->setApprove($request->get('approve'));
-
-        if ($request->query->has('url')) {
-            $user->setUrl($request->get('url'));
-        }
-
-        if ($request->query->has('file_name')) {
-            $user->setFileName($request->get('file_name'));
-        }
-
+        $user->setUrl($request->get('url'));
+        $user->setFileName($request->get('file_name'));
 
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->respondCreated($userRepository->transform($user));
+        return new Response($this->get('serializer')->serialize($user, 'json'));
     }
 
     /**
-     * @Route("/api/users/{id}", name="users_remove", methods="DELETE")
+     * @Route("/api/users/{id}", defaults={"_format"="json"}, name="users_remove", methods="DELETE")
      */
-    public function removeUser(Request $request, UserRepository $userRepository)
+    public function removeUser(User $user)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        if (! $request) {
-            return $this->respondValidationError('Please provide a valid request!');
-        }
-
-        if (! $request->get('id')) {
-            return $this->respondValidationError('Please provide id!');
-        }
-
-        $user = $userRepository->find($request->get('id'));
-
-        if (! $user) {
-            return $this->respondNotFound();
-        }
 
         $entityManager->remove($user);
 
         $entityManager->flush();
 
-        return $this->respondCreated($userRepository->transform($user));
+        return $this->respondCreated($this->transformToJSON($user));
     }
 
     /**
-     * @Route("/api/users", name="users_update", methods="PATCH")
+     * @Route("/api/users", defaults={"_format"="json"}, name="users_update", methods="PATCH")
      */
     public function updateUser(Request $request, UserRepository $userRepository)
     {
