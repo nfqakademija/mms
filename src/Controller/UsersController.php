@@ -17,7 +17,6 @@ use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-
 class UsersController extends AbstractController
 {
 
@@ -135,7 +134,7 @@ class UsersController extends AbstractController
         $user->setFileName($request->get('file_name'));
 
         $errors = $validator->validate($user);
-        if(count($errors) > 0) {
+        if (count($errors) > 0) {
             $errorsString = (string)$errors;
             return new Response($errorsString);
         }
