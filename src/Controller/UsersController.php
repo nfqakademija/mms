@@ -15,6 +15,8 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 class UsersController extends AbstractController
 {
@@ -120,7 +122,7 @@ class UsersController extends AbstractController
     /**
      * @Route("/api/users", defaults={"_format"="json"}, name="users_create", methods="PUT")
      */
-    public function createUser(Request $request, UserRepository $userRepository)
+    public function createUser(Request $request, UserRepository $userRepository, ValidatorInterface $validator)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -131,6 +133,12 @@ class UsersController extends AbstractController
         $user->setApprove($request->get('approve'));
         $user->setUrl($request->get('url'));
         $user->setFileName($request->get('file_name'));
+
+        $errors = $validator->validate($user);
+        if(count($errors) > 0) {
+            $errorsString = (string)$errors;
+            return new Response($errorsString);
+        }
 
         $entityManager->persist($user);
         $entityManager->flush();
@@ -149,7 +157,7 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->respondCreated($this->transformToJSON($user));
+        return new Response($this->get('serializer')->serialize($user, 'json'));
     }
 
     /**
@@ -194,6 +202,6 @@ class UsersController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->respondCreated($userRepository->transform($user));
+        return new Response($this->get('serializer')->serialize($user, 'json'));
     }
 }
