@@ -125,9 +125,9 @@ class MembershipsController extends AbstractController
         $now = new \DateTime();
         if (date_diff($expiredDate,$now)->y >= 3) {
             $membership->setStatus('canceled');
-        } else if (date_diff($expiredDate,$now)->y >= 2 && date_diff($expiredDate,$now)->m >= 9) {
+        } elseif (date_diff($expiredDate,$now)->y >= 2 && date_diff($expiredDate,$now)->m >= 9) {
             echo 'send email about cancelation';
-        } else if (date_diff($expiredDate,$now)->y >= 2) {
+        } elseif (date_diff($expiredDate,$now)->y >= 2) {
             $membership->setStatus('suspended');
         }
     }

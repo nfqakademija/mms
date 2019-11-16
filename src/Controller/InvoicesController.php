@@ -96,7 +96,9 @@ class InvoicesController extends AbstractController
     public function modifyMembership(Invoice $invoice, Request $request)
     {
         try {
-            $response = \WebToPay::validateAndParseData($request->query->all(), $this->getParameter('project_id'), $this->getParameter('project_pass'));
+            $response = \WebToPay::validateAndParseData(
+                $request->query->all(), $this->getParameter('project_id'), $this->getParameter('project_pass')
+            );
         } catch (Exception $e) {
             echo 'Your payment is not yet confirmed, system error<br />';
         }
@@ -116,7 +118,6 @@ class InvoicesController extends AbstractController
         $invoice->setRequestId($response['requestid']);
         $entityManager->persist($membership);
         $entityManager->persist($invoice);
-
         $entityManager->flush();
 
         return $this->redirectToRoute('memberships');
