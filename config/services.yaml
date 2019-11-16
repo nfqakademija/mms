@@ -4,7 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-
+    project_pass: 'a63fc8c5d915e1f1a40f40e6c7499863'
+    project_id: 155526
+    project_country: 'LT'
 services:
     # default configuration for services in *this* file
     _defaults:

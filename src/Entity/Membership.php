@@ -19,11 +19,6 @@ class Membership
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $user_id;
-
-    /**
      * @ORM\Column(type="string", length=20)
      */
     private $status;
@@ -38,6 +33,12 @@ class Membership
      */
     private $invoice;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="membership", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function __construct()
     {
         $this->invoice = new ArrayCollection();
@@ -46,18 +47,6 @@ class Membership
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId(int $user_id): self
-    {
-        $this->user_id = $user_id;
-
-        return $this;
     }
 
     public function getStatus(): ?string
@@ -111,6 +100,18 @@ class Membership
                 $invoice->setMembership(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

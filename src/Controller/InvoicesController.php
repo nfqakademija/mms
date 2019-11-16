@@ -3,68 +3,84 @@
 namespace App\Controller;
 
 use App\Entity\Membership;
+use App\Form\InvoiceType;
+use App\Repository\InvoiceRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Invoice;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class InvoicesController extends AbstractController
 {
     /**
-     * @Route("/invoices", name="invoices")
+     * @Route("/api/invoices", name="invoices", methods="GET")
      */
-    public function index()
+    public function index(Request $request, SerializerInterface $serializer)
     {
-        $this->createNewInvoice();
-        return $this->render('invoices/index.html.twig', [
-            'invoices' => $this->getDoctrine()->getRepository(Invoice::class)->findAll()
+        $invoices = $this->getDoctrine()->getRepository(Invoice::class)->findAll();
+
+        $jsonObject = $serializer->serialize($invoices, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
         ]);
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_OK);
     }
 
     /**
-     * @Route("/invoice/create", name="create_invoice", methods={"POST", "GET"})
+     * @Route("/api/invoice", name="create_invoice", methods="GET")
      */
-    public function create($id = 1)
+    public function create(Request $request, SerializerInterface $serializer)
     {
-            $entityManager = $this->getDoctrine()->getManager();
-            $membership = new Membership();
-            $membership = $entityManager->getRepository(Membership::class)->find($id);
-            $invoice = new Invoice();
-            $invoice->setAmount(5678);
-            $invoice->setStatus(0);
-            $invoice->setMembership($membership);
-            $invoice->setCurrency('EUR');
-            $invoice->setPaytext('Apmokejimas uz paslaugas');
-            //$invoice->setCreatedAt();
-            $entityManager->persist($invoice);
-            $entityManager->flush();
-        return $this->redirectToRoute('invoices');
-    }
+        $invoice = new Invoice();
+        $form = $this->createForm(InvoiceType::class, $invoice);
 
-    /**
-     * @Route("/redirect/invoice/{id}", name="redirect_invoice", methods={"POST", "GET"})
-     */
-    public function redirectToPayment($id)
-    {
+        $form->submit($request->query->all());
+
+        if (false === $form->isValid()) {
+            return new JsonResponse('error');
+        }
+
         $entityManager = $this->getDoctrine()->getManager();
-        $invoice = $entityManager->getRepository(Invoice::class)->find($id);
+        $membership = $entityManager->getRepository(Membership::class)->find($request->get('membershipId'));
+        $invoice->setAmount($request->get('amount'));
+        $invoice->setStatus(0);
+        $invoice->setMembership($membership);
+        $invoice->setCurrency('EUR');
+        $invoice->setPaytext($request->get('payText'));
+        $entityManager->persist($invoice);
+        $entityManager->flush();
 
-        $self_url = $this->get_self_url();
+        $jsonObject = $serializer->serialize($invoice, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
 
+        return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("/redirect/invoice/{id}", name="redirect_invoice", methods="GET")
+     */
+    public function redirectToPayment(Request $request, Invoice $invoice)
+    {
         try {
-
-            $request = \WebToPay::redirectToPayment(array(
-                'projectid'     => 155526,
-                'sign_password' => 'a63fc8c5d915e1f1a40f40e6c7499863',
+            \WebToPay::redirectToPayment(array(
+                'projectid'     => $this->getParameter('project_id'),
+                'sign_password' => $this->getParameter('project_pass'),
                 'orderid'       => $invoice->getId(),
                 'amount'        => $invoice->getAmount(),
                 'currency'      => $invoice->getCurrency(),
-                'country'       => 'LT',
-                'accepturl'     => $self_url.'invoice/update/'.$id,
-                'cancelurl'     => $self_url.'cancel.php',
-                'callbackurl'   => $self_url.'callback.php',
+                'country'       => $this->getParameter('project_country'),
+                'accepturl'     => $request->getSchemeAndHttpHost().'/invoice/accept/'.$invoice->getId(),
+                'cancelurl'     => $request->getSchemeAndHttpHost().'cancel.php',
+                'callbackurl'   => $request->getSchemeAndHttpHost().'callback.php',
                 'test'          => 1,
                 'p_email' => 'bandymas1@gmail.com',
                 'paytext' => $invoice->getPaytext()
@@ -75,37 +91,21 @@ class InvoicesController extends AbstractController
 
     }
     /**
-     * @Route("/invoice/update/{id}", name="edit_invoice", methods={"GET"})
+     * @Route("/invoice/accept/{id}", name="edit_invoice", methods={"GET"})
      */
-    public function update($id, Request $request)
+    public function modifyMembership(Invoice $invoice, Request $request)
     {
-        $get = $request->query->all();
-
         try {
-            $response = \WebToPay::validateAndParseData($get, 155526, 'a63fc8c5d915e1f1a40f40e6c7499863');
-
-            if ($response['status'] == 1 || $response['status'] == 2) {
-                // You can start providing services when you get confirmation with accept url
-                // Be sure to check if this order is not yet confirmed - user can refresh page anytime
-                // status 2 means that payment has been got but it's not yet confirmed
-                // @todo: get order by $response['orderid'], validate test (!), amount and currency
-            }
+            $response = \WebToPay::validateAndParseData($request->query->all(), $this->getParameter('project_id'), $this->getParameter('project_pass'));
         } catch (Exception $e) {
             echo 'Your payment is not yet confirmed, system error<br />';
         }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $invoice = $entityManager->getRepository(Invoice::class)->find($id);
-
-        if (!$invoice) {
-            throw $this->createNotFoundException('No invoice found for id ' . $id);
-        }
-
         $membershipId = $invoice->getMembership()->getId();
         $membership = $entityManager->getRepository(Membership::class)->find($membershipId);
         $addedYear = $membership->getExpiredAt()->modify('+1 year');
         $now = new \DateTime();
-
         $membership->setExpiredAt($addedYear);
         $addedTwoYears = $addedYear->modify('+1 year');
         if($addedTwoYears > $now){
@@ -123,41 +123,21 @@ class InvoicesController extends AbstractController
     }
 
     /**
-     * @Route("/invoice/delete/{id}", name="delete_invoice", methods={"POST", "GET"})
+     * @Route("/invoice/{id}", name="delete_invoice", methods="DELETE")
      */
-    public function delete($id)
+    public function cancelInvoice(Invoice $invoice, SerializerInterface $serializer)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $invoice = $entityManager->getRepository(Invoice::class)->find($id);
-
-        if (!$invoice) {
-            throw $this->createNotFoundException('No invoice found for id ' . $id);
-        }
-
         $invoice->setCanceledAt();
 
-        $entityManager->flush();
+        $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('invoices');
-    }
+        $jsonObject = $serializer->serialize($invoice, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
 
-    private function get_self_url() {
-        $s = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0,
-            strpos($_SERVER['SERVER_PROTOCOL'], '/'));
-
-        if (!empty($_SERVER["HTTPS"])) {
-            $s .= ($_SERVER["HTTPS"] == "on") ? "s" : "";
-        }
-
-        $s .= '://'.$_SERVER['HTTP_HOST'];
-
-        /*    if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') {
-                $s .= ':'.$_SERVER['SERVER_PORT'];
-            }*/
-
-        $s .= dirname($_SERVER['SCRIPT_NAME']);
-
-        return $s;
+        return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_OK);
     }
 
     public function createNewInvoice()
@@ -176,7 +156,7 @@ class InvoicesController extends AbstractController
         }
     }
 
-    public function createInvoice($membershipId, $invoiceDetails = null)
+    public function createInvoice($membershipId)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $membership = new Membership();

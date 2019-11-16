@@ -56,7 +56,8 @@ class MembershipRepository extends ServiceEntityRepository
         $sql = '
                 SELECT id
                 FROM membership m 
-                WHERE DATE_SUB(m.expired_at, INTERVAL 30 DAY) <= NOW()
+                WHERE DATE_SUB(date(m.expired_at), INTERVAL 30 DAY) = NOW()
+                
         ';
         $stmt = $conn->prepare($sql);
 
@@ -72,7 +73,7 @@ class MembershipRepository extends ServiceEntityRepository
         $sql = '
                 SELECT id 
                 FROM membership m 
-                WHERE m.expired_at <= NOW()
+                WHERE m.expired_at < NOW()
         ';
         $stmt = $conn->prepare($sql);
         $stmt->execute();

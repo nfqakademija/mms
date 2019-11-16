@@ -3,58 +3,104 @@
 namespace App\Controller;
 
 use App\Entity\Membership;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class MembershipsController extends AbstractController
 {
     /**
-     * @Route("/memberships", name="memberships")
+     * @Route("/memberships", name="memberships", methods="GET")
      */
-    public function index()
-
+    public function showAllMemberships(SerializerInterface $serializer)
     {
-        $this->checkExpiredMembershipsStatus();
-        return $this->render('memberships/index.html.twig', [
-            'memberships' => $this->getDoctrine()->getRepository(Membership::class)->findAll()
+        $memberships = $this->getDoctrine()->getRepository(Membership::class)->findAll();
+
+        $jsonObject = $serializer->serialize($memberships, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
         ]);
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_OK);
+
     }
 
     /**
-     * @Route("/membership/create", name="create_membership", methods={"POST", "GET"})
+     * @Route("/membership/{id}", name="show_membership", methods="GET")
      */
-    public function create()
+    public function showMembership(SerializerInterface $serializer, Membership $membership)
+    {
+        $jsonObject = $serializer->serialize($membership, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_OK);
+    }
+
+    /**
+     * @Route("/membership", name="create_membership", methods="POST")
+     */
+    public function createMembership(Request $request, SerializerInterface $serializer)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $membership = new Membership();
-        $membership->setUserId(4);
-        $membership->setStatus('active');
-        $date = new \DateTime();
-        $date->modify('+365 day');
-        $membership->setExpiredAt($date);
+        $user = $entityManager->getRepository(User::class)->find($request->get('userId'));
+        $membership->setUser($user);
+        $membership->setStatus($request->get('status'));
+        $membership->setExpiredAt(new \DateTime($request->get('expiredAt')));
 
         $entityManager->persist($membership);
         $entityManager->flush();
+        $jsonObject = $serializer->serialize($membership, 'json');
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
 
         return $this->redirectToRoute('memberships');
     }
 
     /**
-     * @Route("/membership/update/{id}", name="edit_membership", methods={"POST", "GET"})
+     * @Route("/membership/{id}", name="edit_membership", methods="PUT")
      */
-    public function update($id, Request $request)
+    public function updateMembership(Membership $membership, Request $request, SerializerInterface $serializer)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $membership = $entityManager->getRepository(Membership::class)->find($id);
-
-        if (!$membership) {
-            throw $this->createNotFoundException('No membership found for id ' . $id);
-        }
-
-        $membership->setStatus('active');
+        $membership->setStatus($request->get('status'));
+        $membership->setExpiredAt(new \DateTime($request->get('expiredAt')));
 
         $entityManager->flush();
+
+        $jsonObject = $serializer->serialize($membership, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
+
+        return $this->redirectToRoute('invoices');
+    }
+
+    /**
+     * @Route("/membership/{id}", name="delete_membership", methods="DELETE")
+     */
+    public function deleteMembership(Membership $membership, Request $request, SerializerInterface $serializer)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($membership);
+        $entityManager->flush();
+
+        $jsonObject = $serializer->serialize($membership, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_OK);
 
         return $this->redirectToRoute('invoices');
     }
