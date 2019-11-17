@@ -22,6 +22,7 @@ class InvoicesController extends AbstractController
     public function index(Request $request, SerializerInterface $serializer)
     {
         $invoices = $this->getDoctrine()->getRepository(Invoice::class)->findAll();
+
         $jsonObject = $serializer->serialize($invoices, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
@@ -37,24 +38,34 @@ class InvoicesController extends AbstractController
     {
         $invoice = new Invoice();
         $form = $this->createForm(InvoiceType::class, $invoice);
+
         $form->submit($request->query->all());
         if (false === $form->isValid()) {
             return new JsonResponse('error');
         }
+
+        $form->submit($request->query->all());
+
+        if (false === $form->isValid()) {
+            return new JsonResponse('error');
+        }
+
         $entityManager = $this->getDoctrine()->getManager();
         $membership = $entityManager->getRepository(Membership::class)->find($request->get('membershipId'));
         $invoice->setAmount($request->get('amount'));
-        $invoice->setStatus(0);
+        $invoice->setStatus($request->get('status'));
         $invoice->setMembership($membership);
         $invoice->setCurrency('EUR');
         $invoice->setPaytext($request->get('payText'));
         $entityManager->persist($invoice);
         $entityManager->flush();
+
         $jsonObject = $serializer->serialize($invoice, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
         ]);
+      
         return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_CREATED);
     }
 
@@ -82,7 +93,7 @@ class InvoicesController extends AbstractController
             echo $e->getMessage();
         }
     }
-
+  
     /**
      * @Route("/invoice/accept/{id}", name="edit_invoice", methods={"GET"})
      */
@@ -93,6 +104,7 @@ class InvoicesController extends AbstractController
         } catch (Exception $e) {
             echo 'Your payment is not yet confirmed, system error<br />';
         }
+
         $entityManager = $this->getDoctrine()->getManager();
         $membershipId = $invoice->getMembership()->getId();
         $membership = $entityManager->getRepository(Membership::class)->find($membershipId);
@@ -106,9 +118,11 @@ class InvoicesController extends AbstractController
         $invoice->setPaymentType($response['payment']);
         $invoice->setStatus($response['status']);
         $invoice->setRequestId($response['requestid']);
+      
         $entityManager->persist($membership);
         $entityManager->persist($invoice);
         $entityManager->flush();
+
         return $this->redirectToRoute('memberships');
     }
 
@@ -119,11 +133,13 @@ class InvoicesController extends AbstractController
     {
         $invoice->setCanceledAt();
         $this->getDoctrine()->getManager()->flush();
+
         $jsonObject = $serializer->serialize($invoice, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
         ]);
+
         return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_OK);
     }
 
@@ -132,6 +148,7 @@ class InvoicesController extends AbstractController
         $membershipIds = $this->getDoctrine()
             ->getRepository(Membership::class)
             ->findAllMembershipsMonthBeforeExpirationIds();
+
         foreach ($membershipIds as $membershipId) {
             $invoice = $this->getDoctrine()
                 ->getRepository(Invoice::class)
@@ -153,8 +170,11 @@ class InvoicesController extends AbstractController
         $invoice->setMembership($membership);
         $invoice->setCurrency('EUR');
         $invoice->setPaytext('ir vel tu');
+
         $entityManager->persist($invoice);
         $entityManager->flush();
+      
         return $this->redirectToRoute('invoices');
     }
 }
+

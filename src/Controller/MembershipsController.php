@@ -18,6 +18,7 @@ class MembershipsController extends AbstractController
     public function showAllMemberships(SerializerInterface $serializer)
     {
         $memberships = $this->getDoctrine()->getRepository(Membership::class)->findAll();
+
         $jsonObject = $serializer->serialize($memberships, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
@@ -66,6 +67,7 @@ class MembershipsController extends AbstractController
         $membership->setStatus($request->get('status'));
         $membership->setExpiredAt(new \DateTime($request->get('expiredAt')));
         $entityManager->flush();
+      
         $jsonObject = $serializer->serialize($membership, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
@@ -83,6 +85,7 @@ class MembershipsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($membership);
         $entityManager->flush();
+
         $jsonObject = $serializer->serialize($membership, 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
@@ -97,6 +100,7 @@ class MembershipsController extends AbstractController
         $membershipIds = $this->getDoctrine()
             ->getRepository(Membership::class)
             ->findAllExpiredMembershipsIds();
+
         foreach ($membershipIds as $membershipId) {
             $this->checkExpiredMembershipStatus($membershipId);
         }

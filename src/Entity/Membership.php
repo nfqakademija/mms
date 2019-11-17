@@ -57,6 +57,7 @@ class Membership
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -68,6 +69,7 @@ class Membership
     public function setExpiredAt(\DateTimeInterface $expired_at): self
     {
         $this->expired_at = clone $expired_at;
+
         return $this;
     }
 
@@ -108,6 +110,7 @@ class Membership
     public function setUser(User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 }

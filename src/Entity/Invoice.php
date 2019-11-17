@@ -87,6 +87,7 @@ class Invoice
     public function setAmount(int $amount): self
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -98,6 +99,7 @@ class Invoice
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -109,6 +111,7 @@ class Invoice
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
+
         return $this;
     }
 
@@ -120,6 +123,7 @@ class Invoice
     public function setPaymentType(?string $payment_type): self
     {
         $this->payment_type = $payment_type;
+
         return $this;
     }
 
@@ -131,6 +135,7 @@ class Invoice
     public function setPaytext(?string $paytext): self
     {
         $this->paytext = $paytext;
+
         return $this;
     }
 
@@ -142,24 +147,28 @@ class Invoice
     public function setRequestId(?int $request_id): self
     {
         $this->request_id = $request_id;
+
         return $this;
     }
 
     public function setCanceledAt()
     {
         $this->canceledAt = new \DateTime("now");
+
         return $this;
     }
 
     public function setCreatedAt()
     {
         $this->createdAt = new \DateTime("now");
+
         return $this;
     }
 
     public function setUpdatedAt()
     {
         $this->updatedAt = new \DateTime("now");
+
         return $this;
     }
 
@@ -192,6 +201,7 @@ class Invoice
     public function setMembership(?Membership $membership): self
     {
         $this->membership = $membership;
+
         return $this;
     }
 }
