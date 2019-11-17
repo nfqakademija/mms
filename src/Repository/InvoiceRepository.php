@@ -33,18 +33,6 @@ class InvoiceRepository extends ServiceEntityRepository
         ;
     }
 
-    public function transform(Invoice $invoice)
-    {
-        return [
-            'id'    => (int) $invoice->getId(),
-            'membership_id' => (int) $invoice->getMembership()->getId(),
-            'amount' => (int) $invoice->getAmount(),
-            'status' => (int) $invoice->getStatus(),
-            'currency' => (string) $invoice->getCurrency(),
-            'paytext' => (string) $invoice->getPaytext()
-        ];
-    }
-
 
     /*
     public function findOneBySomeField($value): ?Invoice
