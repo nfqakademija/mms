@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello InvoicesController!{% endblock %}
+
+{% block body %}
+    <a href="{{ path('create_membership') }}">CREATE NEW</a>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>USER ID</th>
+            <th>STATUS</th>
+            <th>EXPIRED AT</th>
+
+        </tr>
+        {% for membership in memberships %}
+            <tr>
+                <td>{{ membership.id }}</td>
+                <td>{{ membership.userId }}</td>
+                <td>{{ membership.status }}</td>
+                <td>{{ membership.expiredAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello InvoicesController!{% endblock %}
+
+{% block body %}
+    <a href="{{ path('create_invoice') }}">CREATE NEW</a>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>AMOUNT</th>
+            <th>STATUS</th>
+            <th>MEMBERSHIP ID</th>
+            <th>CURRENCY</th>
+            <th>PAYMENT TYPE</th>
+            <th>PAYMENT TEXT</th>
+            <th>REQUEST ID</th>
+            <th>CREATED AT</th>
+            <th>UPDATED AT</th>
+            <th>CANCELED AT</th>
+
+
+        </tr>
+        {% for invoice in invoices %}
+        <tr>
+            <td>{{ invoice.id }}</td>
+            <td>{{ invoice.amount }}</td>
+            <td>{{ invoice.status }}</td>
+            <td>{{ invoice.membership.id }}</td>
+            <td>{{ invoice.currency }}</td>
+            <td>{{ invoice.paymentType }}</td>
+            <td>{{ invoice.paytext }}</td>
+            <td>{{ invoice.requestId }}</td>
+            <td>{{ invoice.createdAt|date('Y-m-d H:i:s') }}</td>
+            <td>{{ invoice.updatedAt|date('Y-m-d H:i:s') }}</td>
+            <td>{{ invoice.canceledAt|date('Y-m-d H:i:s') }}</td>
+            <td><a href="{{ path('redirect_invoice', { 'id': invoice.id }) }}">PAY</a> </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
