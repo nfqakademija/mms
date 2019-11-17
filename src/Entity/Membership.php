@@ -87,7 +87,6 @@ class Membership
             $this->invoice[] = $invoice;
             $invoice->setMembership($this);
         }
-
         return $this;
     }
 
@@ -100,7 +99,6 @@ class Membership
                 $invoice->setMembership(null);
             }
         }
-
         return $this;
     }
 

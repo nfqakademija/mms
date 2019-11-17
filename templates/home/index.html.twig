@@ -3,6 +3,25 @@
 {% block title %}{{ someVariable }}{% endblock %}
 
 {% block body %}
+
 <div id="root"></div>
+
+<div style="margin: 60px;">
+    <h2>Create Membership</h2>
+    <p>User must be created before creating membership, you must to know user id</p>
+    <form action="#">
+        input name="userId"<br>
+        <input type="text" name="userId" placeholder="3">
+        <br>
+        input name="status"<br>
+        <input type="text" name="status" placeholder="active">
+        <br>
+        input name="expiredAt"<br>
+        <input type="text" name="expiredAt" placeholder="2020-01-01">
+        <br>
+        <br><br>
+        <input type="submit" value="Create membership">
+    </form>
+</div>
 
 {% endblock %}

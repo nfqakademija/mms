@@ -28,17 +28,21 @@ class InvoicesController extends AbstractController
                 return $object->getId();
             }
         ]);
-
         return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_OK);
     }
 
     /**
-     * @Route("/api/invoice", name="create_invoice", methods="GET")
+     * @Route("/api/invoices", name="create_invoice", methods="POST")
      */
     public function create(Request $request, SerializerInterface $serializer)
     {
         $invoice = new Invoice();
         $form = $this->createForm(InvoiceType::class, $invoice);
+
+        $form->submit($request->query->all());
+        if (false === $form->isValid()) {
+            return new JsonResponse('error');
+        }
 
         $form->submit($request->query->all());
 
@@ -49,7 +53,7 @@ class InvoicesController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $membership = $entityManager->getRepository(Membership::class)->find($request->get('membershipId'));
         $invoice->setAmount($request->get('amount'));
-        $invoice->setStatus(0);
+        $invoice->setStatus($request->get('status'));
         $invoice->setMembership($membership);
         $invoice->setCurrency('EUR');
         $invoice->setPaytext($request->get('payText'));
@@ -61,7 +65,7 @@ class InvoicesController extends AbstractController
                 return $object->getId();
             }
         ]);
-
+      
         return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_CREATED);
     }
 
@@ -88,8 +92,8 @@ class InvoicesController extends AbstractController
         } catch (\WebToPayException $e) {
             echo $e->getMessage();
         }
-
     }
+  
     /**
      * @Route("/invoice/accept/{id}", name="edit_invoice", methods={"GET"})
      */
@@ -114,21 +118,20 @@ class InvoicesController extends AbstractController
         $invoice->setPaymentType($response['payment']);
         $invoice->setStatus($response['status']);
         $invoice->setRequestId($response['requestid']);
+      
         $entityManager->persist($membership);
         $entityManager->persist($invoice);
-
         $entityManager->flush();
 
         return $this->redirectToRoute('memberships');
     }
 
     /**
-     * @Route("/invoice/{id}", name="delete_invoice", methods="DELETE")
+     * @Route("/api/invoices/{id}", name="delete_invoice", methods="DELETE")
      */
     public function cancelInvoice(Invoice $invoice, SerializerInterface $serializer)
     {
         $invoice->setCanceledAt();
-
         $this->getDoctrine()->getManager()->flush();
 
         $jsonObject = $serializer->serialize($invoice, 'json', [
@@ -170,7 +173,8 @@ class InvoicesController extends AbstractController
 
         $entityManager->persist($invoice);
         $entityManager->flush();
-
+      
         return $this->redirectToRoute('invoices');
     }
 }
+

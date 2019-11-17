@@ -74,7 +74,6 @@ class Invoice
      */
     private $membership;
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -205,5 +204,4 @@ class Invoice
 
         return $this;
     }
-
 }

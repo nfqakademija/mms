@@ -45,7 +45,6 @@ class InvoiceRepository extends ServiceEntityRepository
         ];
     }
 
-
     /*
     public function findOneBySomeField($value): ?Invoice
     {
