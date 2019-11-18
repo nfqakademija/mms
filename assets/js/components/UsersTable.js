@@ -1,7 +1,7 @@
 import React from "react";
-import axios from "axios";
 import MaterialTable from "material-table";
 import API from "../core/api";
+import moment from "moment";
 
 //TODO Loading and alert banners//
 
@@ -13,16 +13,24 @@ export default class UsersTable extends React.Component {
     };
   }
   componentDidMount() {
-    API.get(`/users`).then(res => {
-      const users = res.data;
+    API.get(`/memberships`).then(res => {
+      let users = res.data;
+      for (let user in users) {
+        users[user].expiredAt = moment(users[user].expiredAt).format(
+          `YYYY-MM-DD`
+        );
+      }
       this.setState({ users });
     });
   }
+
   render() {
     const columns = [
-      { title: "Vardas", field: "name" },
-      { title: "Pavarde", field: "surname" },
-      { title: "El. Pastas", field: "email" }
+      { title: "Vardas", field: "user.name" },
+      { title: "Pavarde", field: "user.surname" },
+      { title: "El. Pastas", field: "user.email" },
+      { title: "Statusas", field: "status" },
+      { title: "Galioja iki", field: "expiredAt", type: "date" }
     ];
     const approve = 0;
 
@@ -37,10 +45,11 @@ export default class UsersTable extends React.Component {
         editable={{
           onRowAdd: newData =>
             new Promise(resolve => {
-              const name = newData.name;
-              const surname = newData.surname;
-              const email = newData.email;
-
+              const name = newData.user.name;
+              const surname = newData.user.surname;
+              const email = newData.user.email;
+              const status = newData.status;
+              const expiredAt = newData.expiredAt;
               API.put(`/users`, null, {
                 params: {
                   name,
@@ -50,19 +59,35 @@ export default class UsersTable extends React.Component {
                 }
               }).then(res => {
                 if (res.status == 200) {
-                  const users = this.state.users;
-                  users.push(res.data);
-                  this.setState({ users }, () => resolve());
+                  const userId = res.data.id;
+                  API.post(`/memberships`, null, {
+                    params: {
+                      expiredAt,
+                      status,
+                      userId
+                    }
+                  }).then(res2 => {
+                    if (res.status == 200) {
+                      const users = this.state.users;
+                      let user = res2.data;
+                      user.expiredAt = moment(user.expiredAt).format(
+                        `YYYY-MM-DD`
+                      );
+                      users.push(user);
+                      this.setState({ users }, () => resolve());
+                    }
+                  });
                 }
               });
-              resolve();
             }),
           onRowUpdate: (newData, oldData) =>
             new Promise(resolve => {
-              const name = newData.name;
-              const surname = newData.surname;
-              const email = newData.email;
-              const id = oldData.id;
+              const name = newData.user.name;
+              const surname = newData.user.surname;
+              const email = newData.user.email;
+              const status = newData.status;
+              const expiredAt = newData.expiredAt;
+              const id = oldData.user.id;
               API.patch(`/users`, null, {
                 params: {
                   name,
@@ -70,29 +95,34 @@ export default class UsersTable extends React.Component {
                   email,
                   id
                 }
-              }).then(res => {
-                if (res.status == 200) {
+              });
+              //  if (res.status == 200 || 500) {
+              //TODO: FU**ED BACKEND 500 but works... how?
+              API.put(`/memberships/${newData.id}`, null, {
+                params: {
+                  expiredAt,
+                  status,
+                  id
+                }
+              }).then(res2 => {
+                if (res2.status == 200 || 201) {
+                  //TODO: 201? on update? why? PUT? why? I am not creating new object
+                  console.log(res2);
                   let users = [...this.state.users];
                   users[users.indexOf(oldData)] = newData;
                   this.setState({ users }, () => resolve());
                 }
               });
-
-              resolve();
             }),
           onRowDelete: oldData =>
             new Promise(resolve => {
-              const id = oldData.id;
-
-              API.delete(`/users/${id}`).then(res => {
+              API.delete(`/memberships/${oldData.id}`).then(res => {
                 if (res.status == 200) {
                   let users = [...this.state.users];
                   users.splice(users.indexOf(oldData), 1);
                   this.setState({ users }, () => resolve());
                 }
               });
-
-              resolve();
             })
         }}
       />
