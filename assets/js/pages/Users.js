@@ -6,7 +6,7 @@ export default class Users extends Component {
     return (
       <div>
         <div className="sidenav">
-          <Link to="/users">Vartotojai</Link>
+          <Link to="/users">Nariai</Link>
         </div>
         <UsersTable />
       </div>
