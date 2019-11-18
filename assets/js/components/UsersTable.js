@@ -2,6 +2,9 @@ import React from "react";
 import axios from "axios";
 import MaterialTable from "material-table";
 import API from "../core/api";
+
+//TODO Loading and alert banners//
+
 export default class UsersTable extends React.Component {
   constructor(props) {
     super(props);
@@ -60,7 +63,7 @@ export default class UsersTable extends React.Component {
               const surname = newData.surname;
               const email = newData.email;
               const id = oldData.id;
-              API.patch(`users`, null, {
+              API.patch(`/users`, null, {
                 params: {
                   name,
                   surname,
@@ -81,7 +84,7 @@ export default class UsersTable extends React.Component {
             new Promise(resolve => {
               const id = oldData.id;
 
-              API.delete(`users/${id}`).then(res => {
+              API.delete(`/users/${id}`).then(res => {
                 if (res.status == 200) {
                   let users = [...this.state.users];
                   users.splice(users.indexOf(oldData), 1);
