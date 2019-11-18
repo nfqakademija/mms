@@ -10,7 +10,7 @@ export default class UsersTable extends React.Component {
     };
   }
   componentDidMount() {
-    axios.get(`http://192.168.99.100:8000/api/users`).then(res => {
+    API.get(`/users`).then(res => {
       const users = res.data;
       this.setState({ users });
     });
