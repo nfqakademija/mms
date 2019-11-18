@@ -177,4 +177,3 @@ class InvoicesController extends AbstractController
         return $this->redirectToRoute('invoices');
     }
 }
-
