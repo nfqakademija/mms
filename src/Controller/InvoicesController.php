@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Invoice;
 use App\Entity\Membership;
 use App\Form\InvoiceType;
-use App\Repository\InvoiceRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Invoice;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Serializer\SerializerInterface;
+use WebToPay;
+use WebToPayException;
 
 class InvoicesController extends AbstractController
 {
@@ -65,8 +65,8 @@ class InvoicesController extends AbstractController
                 return $object->getId();
             }
         ]);
-      
-        return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_CREATED);
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
     }
 
     /**
@@ -75,32 +75,32 @@ class InvoicesController extends AbstractController
     public function redirectToPayment(Request $request, Invoice $invoice)
     {
         try {
-            \WebToPay::redirectToPayment(array(
-                'projectid'     => $this->getParameter('project_id'),
+            WebToPay::redirectToPayment(array(
+                'projectid' => $this->getParameter('project_id'),
                 'sign_password' => $this->getParameter('project_pass'),
-                'orderid'       => $invoice->getId(),
-                'amount'        => $invoice->getAmount(),
-                'currency'      => $invoice->getCurrency(),
-                'country'       => $this->getParameter('project_country'),
-                'accepturl'     => $request->getSchemeAndHttpHost().'/invoice/accept/'.$invoice->getId(),
-                'cancelurl'     => $request->getSchemeAndHttpHost().'cancel.php',
-                'callbackurl'   => $request->getSchemeAndHttpHost().'callback.php',
-                'test'          => 1,
+                'orderid' => $invoice->getId(),
+                'amount' => $invoice->getAmount(),
+                'currency' => $invoice->getCurrency(),
+                'country' => $this->getParameter('project_country'),
+                'accepturl' => $request->getSchemeAndHttpHost() . '/invoice/accept/' . $invoice->getId(),
+                'cancelurl' => $request->getSchemeAndHttpHost() . 'cancel.php',
+                'callbackurl' => $request->getSchemeAndHttpHost() . 'callback.php',
+                'test' => 1,
                 'p_email' => 'bandymas1@gmail.com',
                 'paytext' => $invoice->getPaytext()
             ));
-        } catch (\WebToPayException $e) {
+        } catch (WebToPayException $e) {
             echo $e->getMessage();
         }
     }
-  
+
     /**
      * @Route("/invoice/accept/{id}", name="edit_invoice", methods={"GET"})
      */
     public function modifyMembership(Invoice $invoice, Request $request)
     {
         try {
-            $response = \WebToPay::validateAndParseData($request->query->all(), $this->getParameter('project_id'), $this->getParameter('project_pass'));
+            $response = WebToPay::validateAndParseData($request->query->all(), $this->getParameter('project_id'), $this->getParameter('project_pass'));
         } catch (Exception $e) {
             echo 'Your payment is not yet confirmed, system error<br />';
         }
@@ -109,16 +109,16 @@ class InvoicesController extends AbstractController
         $membershipId = $invoice->getMembership()->getId();
         $membership = $entityManager->getRepository(Membership::class)->find($membershipId);
         $addedYear = $membership->getExpiredAt()->modify('+1 year');
-        $now = new \DateTime();
+        $now = new DateTime();
         $membership->setExpiredAt($addedYear);
         $addedTwoYears = $addedYear->modify('+1 year');
-        if($addedTwoYears > $now){
+        if ($addedTwoYears > $now) {
             $membership->setStatus('active');
         }
         $invoice->setPaymentType($response['payment']);
         $invoice->setStatus($response['status']);
         $invoice->setRequestId($response['requestid']);
-      
+
         $entityManager->persist($membership);
         $entityManager->persist($invoice);
         $entityManager->flush();
@@ -140,7 +140,7 @@ class InvoicesController extends AbstractController
             }
         ]);
 
-        return JsonResponse::fromJsonString($jsonObject,JsonResponse::HTTP_OK);
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_OK);
     }
 
     public function createNewInvoice()
@@ -153,7 +153,7 @@ class InvoicesController extends AbstractController
             $invoice = $this->getDoctrine()
                 ->getRepository(Invoice::class)
                 ->getInvoiceWithStatus(0);
-            if(!$invoice){
+            if (!$invoice) {
                 $this->createInvoice($membershipId['id']);
             }
         }
@@ -173,7 +173,7 @@ class InvoicesController extends AbstractController
 
         $entityManager->persist($invoice);
         $entityManager->flush();
-      
+
         return $this->redirectToRoute('invoices');
     }
 }
