@@ -117,7 +117,7 @@ class CommentsController extends AbstractController
      */
     public function putComment(Request $request, CommentRepository $commRep, int $u_id)
     {
-        if (! $request->get('text'))
+        if (! $request->get('text')) 
         {
             return $this->respondValidationError('Please provide comment!');
         }
