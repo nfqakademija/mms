@@ -125,6 +125,19 @@ class UsersController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
+        if (! $request) {
+            return $this->respondValidationError('Please provide a valid request!');
+        }
+        if (! $request->get('name')) {
+            return $this->respondValidationError('Please provide a name!');
+        }
+        if (! $request->get('surname')) {
+            return $this->respondValidationError('Please provide a surname!');
+        }
+        if (! $request->get('email')) {
+            return $this->respondValidationError('Please provide a email!');
+        }
+
         $user = new User();
         $user->setName($request->get('name'));
         $user->setSurname($request->get('surname'));
@@ -132,12 +145,6 @@ class UsersController extends AbstractController
         $user->setApprove($request->get('approve'));
         $user->setUrl($request->get('url'));
         $user->setFileName($request->get('file_name'));
-
-        $errors = $validator->validate($user);
-        if (count($errors) > 0) {
-            $errorsString = (string)$errors;
-            return new Response($errorsString);
-        }
 
         $entityManager->persist($user);
         $entityManager->flush();
