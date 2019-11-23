@@ -117,7 +117,7 @@ class CommentsController extends AbstractController
      */
     public function putComment(Request $request, CommentRepository $commRep, int $u_id)
     {
-        if (! $request->get('text') )
+        if (! $request->get('text'))
         {
             return $this->respondValidationError('Please provide comment!');
         }
@@ -148,12 +148,43 @@ class CommentsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $comment = $entityManager->getRepository(Comment::class)->find($c_id);
 
-        if(!$comment)
+        if (! $comment)
         {
-            return $this->respondValidationError('Coment with that ID does not exist!');
+            return $this->respondValidationError('Comment with that ID does not exist!');
         }
 
         $entityManager->remove($comment);
+        $entityManager->flush();
+
+        return new Response($this->get('serializer')->serialize($comment, 'json'));
+    }
+
+    /**
+     * @Route("/api/users/{u_id}/comments/{c_id}", name="comm_upda", methods="PATCH")
+     * @param Request $request
+     * @param int $u_id
+     * @param int $c_id
+     * @param CommentRepository $commRepo
+     * @return JsonResponse|Response
+     */
+    public function updateComment(Request $request, int $u_id, int $c_id, CommentRepository $commRepo)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $comment = $entityManager->getRepository(Comment::class)->find($c_id);
+
+        if (! $request->get('text'))
+        {
+            return $this->respondValidationError('Please provide comment!');
+        }
+
+        if (! $comment)
+        {
+            return $this->respondValidationError('Comment with that ID does not exist!');
+        }
+
+        $comment->setText($request->get('text'));
+
+        $entityManager->persist($comment);
         $entityManager->flush();
 
         return new Response($this->get('serializer')->serialize($comment, 'json'));
