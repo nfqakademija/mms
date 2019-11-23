@@ -3,7 +3,6 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Comment;
 use App\Entity\User;
 use App\Repository\CommentRepository;
@@ -118,7 +117,7 @@ class CommentsController extends AbstractController
      */
     public function putComment(Request $request, CommentRepository $commRep, int $u_id)
     {
-        if(! $request->get('text'))
+        if (! $request->get('text') )
         {
             return $this->respondValidationError('Please provide comment!');
         }
@@ -132,6 +131,29 @@ class CommentsController extends AbstractController
         $comment->setUserId($user);
 
         $entityManager->persist($comment);
+        $entityManager->flush();
+
+        return new Response($this->get('serializer')->serialize($comment, 'json'));
+    }
+
+    /**
+     * @Route("/api/users/{u_id}/comments/{c_id}", name="comm_del", methods="DELETE")
+     * @param int $u_id
+     * @param int $c_id
+     * @param CommentRepository $commRepo
+     * @return Response
+     */
+    public function removeComment(int $u_id, int $c_id, CommentRepository $commRepo)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $comment = $entityManager->getRepository(Comment::class)->find($c_id);
+
+        if(!$comment)
+        {
+            return $this->respondValidationError('Coment with that ID does not exist!');
+        }
+
+        $entityManager->remove($comment);
         $entityManager->flush();
 
         return new Response($this->get('serializer')->serialize($comment, 'json'));
