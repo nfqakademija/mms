@@ -6,8 +6,11 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\User;
+use App\Repository\CommentRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -88,7 +91,7 @@ class CommentsController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{u_id}/comments", name="comm_getall", methods="GET")
+     * @Route("/api/users/{u_id}/comments", name="comm_getall_id", methods="GET")
      * @param int $u_id
      * @return Response
      */
@@ -104,5 +107,33 @@ class CommentsController extends AbstractController
 
         $jsonContent = $this->get('serializer')->serialize($comments, 'json');
         return new Response($jsonContent);
+    }
+
+    /**
+     * @Route("/api/users/{u_id}/comments", name="comm_put", methods="PUT")
+     * @param Request $request
+     * @param CommentRepository $commRep
+     * @param int $u_id
+     * @return Response
+     */
+    public function putComment(Request $request, CommentRepository $commRep, int $u_id)
+    {
+        if(! $request->get('text'))
+        {
+            return $this->respondValidationError('Please provide comment!');
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $user = $entityManager->getRepository(User::class)->find($u_id);
+
+        $comment = new Comment();
+        $comment->setText($request->get('text'));
+        $comment->setUserId($user);
+
+        $entityManager->persist($comment);
+        $entityManager->flush();
+
+        return new Response($this->get('serializer')->serialize($comment, 'json'));
     }
 }
