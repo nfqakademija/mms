@@ -117,8 +117,7 @@ class CommentsController extends AbstractController
      */
     public function putComment(Request $request, CommentRepository $commRep, int $u_id)
     {
-        if (! $request->get('text')) 
-        {
+        if (! $request->get('text')) {
             return $this->respondValidationError('Please provide comment!');
         }
 
@@ -148,8 +147,7 @@ class CommentsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $comment = $entityManager->getRepository(Comment::class)->find($c_id);
 
-        if (! $comment)
-        {
+        if (! $comment) {
             return $this->respondValidationError('Comment with that ID does not exist!');
         }
 
@@ -172,13 +170,11 @@ class CommentsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $comment = $entityManager->getRepository(Comment::class)->find($c_id);
 
-        if (! $request->get('text'))
-        {
+        if (! $request->get('text')) {
             return $this->respondValidationError('Please provide comment!');
         }
 
-        if (! $comment)
-        {
+        if (! $comment) {
             return $this->respondValidationError('Comment with that ID does not exist!');
         }
 
