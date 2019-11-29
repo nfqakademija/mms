@@ -145,6 +145,9 @@ class UsersController extends AbstractController
         $user->setApprove($request->get('approve'));
         $user->setUrl($request->get('url'));
         $user->setFileName($request->get('file_name'));
+        $user->setLinkedin($request->get('linkedin'));
+        $user->setMobilePhone($request->get('mobilePhone'));
+        $user->setEntryText($request->get('entryText'));
 
         $entityManager->persist($user);
         $entityManager->flush();
@@ -203,6 +206,15 @@ class UsersController extends AbstractController
         }
         if ($request->get('approve')) {
             $user->setApprove($request->get('approve'));
+        }
+        if ($request->get('linkedin')) {
+            $user->setLinkedin($request->get('linkedin'));
+        }
+        if ($request->get('mobilePhone')) {
+            $user->setMobilePhone($request->get('mobilePhone'));
+        }
+        if ($request->get('entryText')) {
+            $user->setEntryText($request->get('entryText'));
         }
 
         $entityManager->persist($user);

@@ -46,6 +46,21 @@ class User
     private $file_name;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $entry_text;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $mobile_phone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $linkedin;
+
+    /**
      * @Assert\NotBlank
      * @ORM\Column(type="string", length=10)
      */
@@ -148,5 +163,53 @@ class User
         }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLinkedin()
+    {
+        return $this->linkedin;
+    }
+
+    /**
+     * @param mixed $linkedin
+     */
+    public function setLinkedin($linkedin): void
+    {
+        $this->linkedin = $linkedin;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMobilePhone()
+    {
+        return $this->mobile_phone;
+    }
+
+    /**
+     * @param mixed $mobile_phone
+     */
+    public function setMobilePhone($mobile_phone): void
+    {
+        $this->mobile_phone = $mobile_phone;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntryText()
+    {
+        return $this->entry_text;
+    }
+
+    /**
+     * @param mixed $entry_text
+     */
+    public function setEntryText($entry_text): void
+    {
+        $this->entry_text = $entry_text;
     }
 }
