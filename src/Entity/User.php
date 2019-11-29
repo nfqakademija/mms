@@ -46,6 +46,11 @@ class User
     private $file_name;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $role;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $entry_text;
@@ -211,5 +216,21 @@ class User
     public function setEntryText($entry_text): void
     {
         $this->entry_text = $entry_text;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param mixed $role
+     */
+    public function setRole($role): void
+    {
+        $this->role = $role;
     }
 }
