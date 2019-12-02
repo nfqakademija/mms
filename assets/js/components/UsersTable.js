@@ -49,6 +49,7 @@ export default function UsersTable() {
                 { status, expiredAt }
               )
             );
+            resolve();
           }),
         onRowUpdate: (newData, oldData) =>
           new Promise(resolve => {
@@ -86,13 +87,9 @@ export default function UsersTable() {
           }),
         onRowDelete: oldData =>
           new Promise(resolve => {
-            API.delete(`/memberships/${oldData.id}`).then(res => {
-              if (res.status == 200) {
-                let users = [...this.state.users];
-                users.splice(users.indexOf(oldData), 1);
-                this.setState({ users }, () => resolve());
-              }
-            });
+            console.log(oldData);
+            dispatch(membershipActions.delete(oldData.id));
+            resolve();
           })
       }}
     />
