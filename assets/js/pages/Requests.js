@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import UsersTable from "../components/UsersTable";
 import SideNav from "../components/SideNav";
-export default class Users extends Component {
+export default class Requests extends Component {
   render() {
     return (
       <div>
         <SideNav />
-        <UsersTable />
+        <p></p>
       </div>
     );
   }
