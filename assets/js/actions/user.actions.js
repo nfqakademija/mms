@@ -1,8 +1,9 @@
 import { userConstants } from "../constants/user.constants";
 import { userService } from "../services/user.service";
-
+import { membershipActions } from "../actions/membership.actions";
 export const userActions = {
   create,
+  createWithMembership,
   getAll,
   getById,
   delete: _delete
@@ -13,6 +14,30 @@ function create(user) {
 
     userService.create(user).then(
       newUser => dispatch(success(newUser)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request(user) {
+    return { type: userConstants.CREATE_REQUEST, user };
+  }
+  function success(user) {
+    return { type: userConstants.CREATE_SUCCESS, user };
+  }
+  function failure(error) {
+    return { type: userConstants.CREATE_FAILURE, error };
+  }
+}
+function createWithMembership(user, membership) {
+  return dispatch => {
+    dispatch(request(user));
+
+    userService.create(user).then(
+      newUser => {
+        membership.userId = newUser.id;
+        dispatch(membershipActions.create(membership));
+        dispatch(success(newUser));
+      },
       error => dispatch(failure(error.toString()))
     );
   };

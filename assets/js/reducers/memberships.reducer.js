@@ -1,6 +1,5 @@
 import { membershipConstants } from "../constants/membership.constants";
-
-export function memberships(state = {}, action) {
+export function memberships(state = { items: [] }, action) {
   switch (action.type) {
     case membershipConstants.GETALL_REQUEST:
       return {

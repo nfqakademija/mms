@@ -43,9 +43,12 @@ export default function UsersTable() {
             const status = newData.status;
             const expiredAt = newData.expiredAt;
 
-            dispatch(userActions.create({ name, surname, email, approve }));
-            const userId = 1;
-            dispatch(membershipActions.create({ userId, status, expiredAt }));
+            dispatch(
+              userActions.createWithMembership(
+                { name, surname, email, approve },
+                { status, expiredAt }
+              )
+            );
           }),
         onRowUpdate: (newData, oldData) =>
           new Promise(resolve => {

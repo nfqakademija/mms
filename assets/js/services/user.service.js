@@ -33,13 +33,12 @@ async function create(user) {
       }
     })
     .then(response => {
-      console.log(response);
       const { status, data } = response;
       if (status == 200) {
         return data;
       }
     })
     .catch(error => {
-      Promise.reject(error);
+      return Promise.reject(error);
     });
 }

@@ -34,8 +34,8 @@ async function create(membership) {
       }
     })
     .then(response => {
-      const { status, data } = response.data;
-
+      const { status, data } = response;
+      console.log(response);
       if (status == 200) {
         return data;
       }

@@ -1,6 +1,6 @@
 import { userConstants } from "../constants/user.constants";
 
-export function users(state = {}, action) {
+export function users(state = { items: [] }, action) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
       return {
@@ -12,7 +12,8 @@ export function users(state = {}, action) {
       };
     case userConstants.GETALL_FAILURE:
       return {
-        error: action.error
+        error: action.error,
+        items: []
       };
     case userConstants.CREATE_REQUEST:
       return {
@@ -21,7 +22,7 @@ export function users(state = {}, action) {
       };
     case userConstants.CREATE_SUCCESS:
       let items = state.items;
-      items.push(action.user);
+      items.push(action.users);
 
       return {
         ...state,
