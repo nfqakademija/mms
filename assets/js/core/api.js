@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = () =>
   axios.create({
-    baseURL: "http://192.168.99.100:8000/api" //process.env.REACT_APP_API
+    baseURL: `https://mms.projektai.nfqakademija.lt/api` //TODO: env URL
   });
 
 export function setAuthorizationHeader(token) {

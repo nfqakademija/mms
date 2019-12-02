@@ -34,6 +34,30 @@ export default function UsersTable() {
       title="Vartotojai"
       columns={columns}
       data={memberships.items}
+      detailPanel={[
+        {
+          icon: "comment-edit",
+
+          tooltip: "Show comments",
+          render: rowData => {
+            return (
+              <div
+                style={{
+                  textAlign: "center",
+                  color: "black"
+                }}
+              >
+                <div>
+                  <p>Komentaras1</p>
+                </div>
+                <div>
+                  <p>Komentaras2</p>
+                </div>
+              </div>
+            );
+          }
+        }
+      ]}
       editable={{
         onRowAdd: newData =>
           new Promise(resolve => {
