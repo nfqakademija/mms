@@ -71,11 +71,6 @@ class User
      */
     private $approve;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Membership", mappedBy="user", cascade={"persist", "remove"})
-     */
-    private $membership;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -149,23 +144,6 @@ class User
     public function setApprove(string $approve): self
     {
         $this->approve = $approve;
-
-        return $this;
-    }
-
-    public function getMembership(): ?Membership
-    {
-        return $this->membership;
-    }
-
-    public function setMembership(Membership $membership): self
-    {
-        $this->membership = $membership;
-
-        // set the owning side of the relation if necessary
-        if ($this !== $membership->getUser()) {
-            $membership->setUser($this);
-        }
 
         return $this;
     }
