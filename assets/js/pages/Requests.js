@@ -6,7 +6,9 @@ export default class Requests extends Component {
     return (
       <div>
         <SideNav />
-        <RequestsList />
+        <div className="container2">
+          <RequestsList />
+        </div>
         <p></p>
       </div>
     );

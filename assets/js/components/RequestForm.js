@@ -1,69 +1,121 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Button from "@material-ui/core/Button";
+import { useDispatch } from "react-redux";
+import DescriptionIcon from "@material-ui/icons/Description";
+import {
+  Container,
+  Card,
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Chip,
+  FormControl,
+  FormControlLabel,
+  Checkbox
+} from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
-  margin: {
-    margin: theme.spacing(5)
-  },
-  input: {
-    display: "none"
+export default function RequestForm() {
+  const dispatch = useDispatch();
+
+  function handleDelete() {
+    alert("delete");
   }
-}));
+  const [state, setState] = React.useState({
+    checkbox: false
+  });
 
-export default function LoginForm() {
-  const classes = useStyles();
+  const handleChange = name => event => {
+    setState({ ...state, [name]: event.target.checked });
+  };
 
   return (
-    <div className="center">
-      <div>
-        <Grid container direction="column" justify="center" alignItems="center">
-          <Grid item>
-            <AccountCircle />
+    <Container>
+      <Typography variant="h4" style={{ marginBottom: "30px" }}>
+        Paraiška įstoti
+      </Typography>
+      <Card style={{ padding: "20px" }}>
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <TextField label="Vardas" fullWidth />
           </Grid>
-          <Grid item>
-            <TextField id="username" label="Vartotojo vardas" />
+          <Grid item xs={6}>
+            <TextField label="Pavarde" fullWidth />
           </Grid>
-          <Grid item>
+        </Grid>
+
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <TextField label="El. Paštas" fullWidth />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField label="Telefono Nr." fullWidth />
+          </Grid>
+        </Grid>
+      </Card>
+      <Card style={{ padding: "20px", marginTop: "20px" }}>
+        <Grid container spacing={3}>
+          <Grid xs item={12}>
+            <TextField label="Nuoroda i LinkedIN profilį" fullWidth />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField label="Nuoroda į portfolio" fullWidth />
+          </Grid>
+        </Grid>
+      </Card>
+      <Card style={{ padding: "20px", marginTop: "20px" }}>
+        <Typography variant="h6" style={{ marginBottom: "30px" }}>
+          Įterpti papildomus faillus
+        </Typography>
+        <Grid container spacing={3}>
+          <Chip
+            icon={DescriptionIcon}
+            label="text.txt"
+            onDelete={handleDelete}
+          />
+          <Grid item xs={6}>
             <input
               accept="image/*"
-              className={classes.input}
               style={{ display: "none" }}
               id="raised-button-file"
               multiple
               type="file"
             />
             <label htmlFor="raised-button-file">
-              <Button
-                variant="raised"
-                component="span"
-                className={classes.button}
-              >
+              <Button variant="contained" component="span">
                 Upload
               </Button>
             </label>
           </Grid>
-          <Grid item>
-            <TextField id="username" label="Vartotojo vardas" />
-          </Grid>
-          <Grid item>
-            <TextField id="username" label="Vartotojo vardas" />
-          </Grid>
-          <Grid item>
-            <TextField id="username" label="Vartotojo vardas" />
-          </Grid>
-          <Grid item>
-            <TextField id="username" label="Vartotojo vardas" />
-          </Grid>
-
-          <Button className={classes.margin} variant="outlined" color="primary">
-            Prisijungti
-          </Button>
         </Grid>
-      </div>
-    </div>
+      </Card>
+      <Card style={{ padding: "20px", marginTop: "20px" }}>
+        <Grid>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={state.checkbox}
+                value="checkbox"
+                onChange={handleChange("checkbox")}
+                color="primary"
+              />
+            }
+            label="Sutinku, kad šita forma yra osum"
+          />
+        </Grid>
+
+        <Button
+          variant="contained"
+          size="medium"
+          color="primary"
+          style={{ marginTop: "20px" }}
+        >
+          Pateikti
+        </Button>
+      </Card>
+    </Container>
   );
 }

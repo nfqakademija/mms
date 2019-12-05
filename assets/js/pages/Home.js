@@ -6,8 +6,9 @@ export default function home() {
   return (
     <div>
       <SideNav />
-
-      <h1>Pagrindinis </h1>
+      <div className="container2">
+        <h1>Pagrindinis </h1>
+      </div>
     </div>
   );
 }

@@ -6,7 +6,9 @@ export default class Users extends Component {
     return (
       <div>
         <SideNav />
-        <UsersTable />
+        <div className="container2">
+          <UsersTable />
+        </div>
       </div>
     );
   }

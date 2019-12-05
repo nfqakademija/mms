@@ -18,6 +18,19 @@ async function getAll() {
       return Promise.reject(error);
     });
 }
+async function _delete() {
+  return await api()
+    .delete(ROUTES.USERS)
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
 async function create(user) {
   const name = user.name;
   const surname = user.surname;
