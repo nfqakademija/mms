@@ -4,33 +4,33 @@
 // the ~ allows you to reference things in node_modules
 //@import "~bootstrap/scss/bootstrap";
 
-.sidenav {
-  height: 100%;
-  width: 160px;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  -webkit-box-shadow: inset -6px 0px 5px -4px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: inset -6px 0px 5px -4px rgba(0, 0, 0, 0.75);
-  box-shadow: inset -6px 0px 5px -4px rgba(0, 0, 0, 0.75);
-  overflow-x: hidden;
-  padding-top: 20px;
-}
+// .sidenav {
+//   height: 100%;
+//   width: 160px;
+//   position: fixed;
+//   z-index: 1;
+//   top: 0;
+//   left: 0;
+//   -webkit-box-shadow: inset -6px 0px 5px -4px rgba(0, 0, 0, 0.75);
+//   -moz-box-shadow: inset -6px 0px 5px -4px rgba(0, 0, 0, 0.75);
+//   box-shadow: inset -6px 0px 5px -4px rgba(0, 0, 0, 0.75);
+//   overflow-x: hidden;
+//   padding-top: 20px;
+// }
 
-.sidenav a {
-  margin-top: 20px;
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #181e44;
-  display: block;
-  transition: 0.1s;
-}
+// .sidenav a {
+//   margin-top: 20px;
+//   padding: 6px 8px 6px 16px;
+//   text-decoration: none;
+//   font-size: 25px;
+//   color: #181e44;
+//   display: block;
+//   transition: 0.1s;
+// }
 
-.sidenav a:hover {
-  color: #673ab7;
-}
+// .sidenav a:hover {
+//   color: #673ab7;
+// }
 .nfq-academy {
   margin: 20px auto;
   text-align: center;
@@ -47,6 +47,6 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
-.container2 {
-  margin-left: 160px; /* Same as the width of the sidenav */
+body {
+  display: "flex";
 }

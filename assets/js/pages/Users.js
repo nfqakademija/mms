@@ -4,11 +4,11 @@ import SideNav from "../components/SideNav";
 export default class Users extends Component {
   render() {
     return (
-      <div>
+      <div style={{ display: "flex" }}>
         <SideNav />
-        <div className="container2">
+        <main style={{ width: "100%" }}>
           <UsersTable />
-        </div>
+        </main>
       </div>
     );
   }

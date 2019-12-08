@@ -4,14 +4,18 @@ export function users(state = { items: [] }, action) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
       return {
+        ...state,
         loading: true
       };
+
     case userConstants.GETALL_SUCCESS:
       return {
+        ...state,
         items: action.users
       };
     case userConstants.GETALL_FAILURE:
       return {
+        ...state,
         error: action.error,
         items: []
       };
@@ -22,14 +26,31 @@ export function users(state = { items: [] }, action) {
       };
     case userConstants.CREATE_SUCCESS:
       let items = state.items;
-      items.push(action.users);
-
+      items.push(action.user);
+      console.log(items);
       return {
         ...state,
-        newUserId: action.user.id,
         items: items
       };
     case userConstants.CREATE_FAILURE:
+      return {
+        ...state,
+        error: action.error
+      };
+    case userConstants.UPDATE_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+    case userConstants.UPDATE_SUCCESS:
+      items = state.items;
+      let id = items.findIndex(x => x.id === action.user.id);
+      items[id] = action.user;
+      return {
+        ...state,
+        items: items
+      };
+    case userConstants.UPDATE_FAILURE:
       return {
         ...state,
         error: action.error

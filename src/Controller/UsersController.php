@@ -215,6 +215,9 @@ class UsersController extends AbstractController
         if ($request->get('role')) {
             $user->setRole($request->get('role'));
         }
+        if ($request->get('expiredAt')) {
+            $user->setExpiredAt(new DateTime($request->get('expiredAt')));
+        }
 
         $entityManager->persist($user);
         $entityManager->flush();

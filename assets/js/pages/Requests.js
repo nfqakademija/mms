@@ -4,12 +4,11 @@ import RequestsList from "../components/RequestsList";
 export default class Requests extends Component {
   render() {
     return (
-      <div>
+      <div style={{ display: "flex" }}>
         <SideNav />
-        <div className="container2">
+        <main>
           <RequestsList />
-        </div>
-        <p></p>
+        </main>
       </div>
     );
   }

@@ -1,14 +1,13 @@
 import React from "react";
-import gif from "..//../img/tumblr_ovx39d2RQo1rx3k87o1_400.gif";
 import SideNav from "../components/SideNav";
-
+import TotalChart from "../components/TotalChart";
 export default function home() {
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <SideNav />
-      <div className="container2">
-        <h1>Pagrindinis </h1>
-      </div>
+      <main style={{ width: "100%" }}>
+        <TotalChart />
+      </main>
     </div>
   );
 }

@@ -1,12 +1,11 @@
 import { userConstants } from "../constants/user.constants";
 import { userService } from "../services/user.service";
-import { membershipActions } from "../actions/membership.actions";
 export const userActions = {
   create,
-  createWithMembership,
   getAll,
   getById,
-  delete: _delete
+  delete: _delete,
+  update
 };
 function create(user) {
   return dispatch => {
@@ -28,28 +27,24 @@ function create(user) {
     return { type: userConstants.CREATE_FAILURE, error };
   }
 }
-function createWithMembership(user, membership) {
+function update(user) {
   return dispatch => {
     dispatch(request(user));
 
-    userService.create(user).then(
-      newUser => {
-        membership.userId = newUser.id;
-        dispatch(membershipActions.create(membership));
-        dispatch(success(newUser));
-      },
+    userService.update(user).then(
+      user => dispatch(success(user)),
       error => dispatch(failure(error.toString()))
     );
   };
 
   function request(user) {
-    return { type: userConstants.CREATE_REQUEST, user };
+    return { type: userConstants.UPDATE_REQUEST, user };
   }
   function success(user) {
-    return { type: userConstants.CREATE_SUCCESS, user };
+    return { type: userConstants.UPDATE_SUCCESS, user };
   }
   function failure(error) {
-    return { type: userConstants.CREATE_FAILURE, error };
+    return { type: userConstants.UPDATE_FAILURE, error };
   }
 }
 
@@ -98,7 +93,7 @@ function _delete(id) {
   return dispatch => {
     dispatch(request(id));
 
-    userService.delete(id).then(
+    userService._delete(id).then(
       user => dispatch(success(id)),
       error => dispatch(failure(id, error.toString()))
     );

@@ -5,6 +5,7 @@ export default class Request extends Component {
   render() {
     return (
       <div>
+        {alert("Try out .../admin ")}
         <RequestForm />
         <p></p>
       </div>

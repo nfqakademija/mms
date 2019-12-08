@@ -6,6 +6,7 @@ export default class Login extends Component {
     return (
       <div>
         <LoginForm />
+        <h6>Tip of the day: Just press login</h6>
       </div>
     );
   }
