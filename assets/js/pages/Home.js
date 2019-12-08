@@ -1,10 +1,13 @@
 import React from "react";
-import gif from "..//../img/tumblr_ovx39d2RQo1rx3k87o1_400.gif";
-
+import SideNav from "../components/SideNav";
+import TotalChart from "../components/TotalChart";
 export default function home() {
   return (
-    <div>
-      <h1>HOME how did u get here?</h1>
+    <div style={{ display: "flex" }}>
+      <SideNav />
+      <main style={{ width: "100%" }}>
+        <TotalChart />
+      </main>
     </div>
   );
 }

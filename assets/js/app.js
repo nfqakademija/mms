@@ -1,20 +1,64 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { userActions } from "./actions/user.actions";
+
+import { store } from "./core/store";
 import Home from "./pages/Home";
 import Users from "./pages/Users";
 import "..//css/app.scss";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Requests from "./pages/Requests";
+import Request from "./pages/Request";
+
+import Login from "./pages/Login";
+
 function App() {
-  return (
-    <div>
-      <div className="container">
+  const admin = useSelector(state => state.admin);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(process.env);
+    dispatch(userActions.getAll());
+  }, []);
+  if (admin.loggedIn) {
+    return (
+      <div>
         <BrowserRouter>
           <Switch>
-            <Route component={Users} />
+            <Route path="/requests">
+              <Requests />
+            </Route>
+
+            <Route path="/users" component={Users} />
+
+            <Route component={Home} />
           </Switch>
         </BrowserRouter>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <div className="container">
+          <BrowserRouter>
+            <Switch>
+              <Route path="/admin">
+                <Login />
+              </Route>
+              <Route>
+                <Request />
+              </Route>
+            </Switch>
+          </BrowserRouter>
+        </div>
+      </div>
+    );
+  }
 }
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
