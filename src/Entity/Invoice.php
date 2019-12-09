@@ -69,10 +69,10 @@ class Invoice
     private $canceledAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="invoice")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Membership", inversedBy="invoice")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private $membership;
 
     public function getId(): ?int
     {
@@ -193,14 +193,14 @@ class Invoice
         return $this->updatedAt;
     }
 
-    public function getUser(): ?User
+    public function getMembership(): ?Membership
     {
-        return $this->user;
+        return $this->membership;
     }
 
-    public function setUser(?User $user): self
+    public function setMembership(?Membership $membership): self
     {
-        $this->user = $user;
+        $this->membership = $membership;
 
         return $this;
     }

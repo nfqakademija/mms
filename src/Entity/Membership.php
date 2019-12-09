@@ -33,11 +33,11 @@ class Membership
      */
     private $invoice;
 
-//    /**
-//     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="membership", cascade={"persist", "remove"})
-//     * @ORM\JoinColumn(nullable=false)
-//     */
-//    private $user;
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
     public function __construct()
     {
@@ -102,15 +102,15 @@ class Membership
         return $this;
     }
 
-//    public function getUser(): ?User
-//    {
-//        return $this->user;
-//    }
-//
-//    public function setUser(User $user): self
-//    {
-//        $this->user = $user;
-//
-//        return $this;
-//    }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 }
