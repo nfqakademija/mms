@@ -48,7 +48,7 @@ class MembershipsController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        if($request->get('userId')){
+        if ($request->get('userId')) {
             $user = $entityManager->getRepository(User::class)->find($request->get('userId'));
             if (!$user) {
                 throw $this->createNotFoundException(
