@@ -4,18 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Repository\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use DateTime;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UsersController extends AbstractController
@@ -138,8 +131,6 @@ class UsersController extends AbstractController
         $user->setMobilePhone($request->get('mobilePhone'));
         $user->setEntryText($request->get('entryText'));
         $user->setRole($request->get('role'));
-        $user->setStatus($request->get('status'));
-        $user->setExpiredAt(new DateTime($request->get('expiredAt')));
 
 
         $entityManager->persist($user);
@@ -197,9 +188,6 @@ class UsersController extends AbstractController
         if ($request->get('file_name')) {
             $user->setFileName($request->get('file_name'));
         }
-        if ($request->get('status')) {
-            $user->setStatus($request->get('status'));
-        }
         if ($request->get('approve')) {
             $user->setApprove($request->get('approve'));
         }
@@ -214,9 +202,6 @@ class UsersController extends AbstractController
         }
         if ($request->get('role')) {
             $user->setRole($request->get('role'));
-        }
-        if ($request->get('expiredAt')) {
-            $user->setExpiredAt(new DateTime($request->get('expiredAt')));
         }
 
         $entityManager->persist($user);

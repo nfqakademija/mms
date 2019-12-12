@@ -4,24 +4,27 @@ namespace App\Controller;
 
 use App\Entity\Invoice;
 use App\Entity\Membership;
-use App\Entity\User;
 use App\Form\InvoiceType;
 use DateTime;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use WebToPay;
 use WebToPayException;
+
+/**
+ * @Security("is_granted('ROLE_USER')")
+ */
 
 class InvoicesController extends AbstractController
 {
     /**
      * @Route("/api/invoices", name="invoices", methods="GET")
      */
-    public function index(Request $request, SerializerInterface $serializer)
+    public function index(SerializerInterface $serializer)
     {
         $invoices = $this->getDoctrine()->getRepository(Invoice::class)->findAll();
 
@@ -34,42 +37,35 @@ class InvoicesController extends AbstractController
     }
 
     /**
-     * @Route("/api/invoices", name="create_invoice", methods="PUT")
+     * @Route("/api/invoices", name="create_invoice", methods="POST")
      */
     public function create(Request $request, SerializerInterface $serializer)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        if (! $request) {
-            return new JsonResponse('error');
-        }
-        if (! $request->get('amount')) {
-            return new JsonResponse('error');
-        }
-        if (! $request->get('status')) {
-            return new JsonResponse('error');
-        }
-        if (! $request->get('payText')) {
-            return new JsonResponse('error');
-        }
-        if (! $request->get('userId')) {
-            return new JsonResponse('error');
-        }
-
-        $user = $entityManager->getRepository(User::class)->find($request->get('userId'));
-
         $invoice = new Invoice();
+        $data = json_decode($request->getContent(), true);
+        $form = $this->createForm(InvoiceType::class, $invoice);
+        $form->submit($data);
+        if (!$form->isValid()) {
+            $this->throwApiProblemValidationExeption($form);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $membership = $entityManager->getRepository(Membership::class)->find($request->get('membershipId'));
         $invoice->setAmount($request->get('amount'));
         $invoice->setStatus($request->get('status'));
-        $invoice->setUser($user);
+        $invoice->setMembership($membership);
         $invoice->setCurrency('EUR');
         $invoice->setPaytext($request->get('payText'));
-
-
         $entityManager->persist($invoice);
         $entityManager->flush();
 
-        return new Response($this->get('serializer')->serialize($invoice, 'json'));
+        $jsonObject = $serializer->serialize($invoice, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
     }
 
     /**
@@ -103,7 +99,7 @@ class InvoicesController extends AbstractController
     public function modifyMembership(Invoice $invoice, Request $request)
     {
         try {
-            $a = $request->query->all();
+            $a = $request->getContent();
             $b = $this->getParameter('project_id');
             $c = $this->getParameter('project_pass');
             $response = WebToPay::validateAndParseData($a, $b, $c);
@@ -169,11 +165,11 @@ class InvoicesController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $membership = new Membership();
-        $membership = $entityManager->getRepository(User::class)->find($membershipId);
+        $membership = $entityManager->getRepository(Membership::class)->find($membershipId);
         $invoice = new Invoice();
         $invoice->setAmount(10000000);
         $invoice->setStatus(0);
-        $invoice->setUser($membership);
+        $invoice->setMembership($membership);
         $invoice->setCurrency('EUR');
         $invoice->setPaytext('ir vel tu');
 
