@@ -60,6 +60,7 @@ class MembershipsController extends AbstractController
             $user->setName($request->get('name'));
             $user->setSurname($request->get('surname'));
             $user->setEmail($request->get('email'));
+            $user->setMobilePhone($request->get('MobilePhone'));
             $entityManager->persist($user);
         }
 
@@ -71,8 +72,11 @@ class MembershipsController extends AbstractController
         $entityManager->persist($membership);
         $entityManager->flush();
 
-        $jsonObject = $serializer->serialize($membership, 'json');
-
+        $jsonObject = $serializer->serialize($membership, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
 
         return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
     }
@@ -89,9 +93,14 @@ class MembershipsController extends AbstractController
         $membership->getUser()->setName($request->get('name'));
         $membership->getUser()->setSurname($request->get('surname'));
         $membership->getUser()->setEmail($request->get('email'));
+        $membership->getUser()->setMobilePhone($request->get('MobilePhone'));
         $entityManager->flush();
 
-        $jsonObject = $serializer->serialize($membership, 'json');
+        $jsonObject = $serializer->serialize($membership, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
 
         return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
     }
