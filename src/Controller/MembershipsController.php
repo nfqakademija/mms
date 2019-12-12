@@ -47,14 +47,32 @@ class MembershipsController extends AbstractController
     public function createMembership(Request $request, SerializerInterface $serializer)
     {
         $entityManager = $this->getDoctrine()->getManager();
+
+        if ($request->get('userId')) {
+            $user = $entityManager->getRepository(User::class)->find($request->get('userId'));
+            if (!$user) {
+                throw $this->createNotFoundException(
+                    'No user found for id '.$request->get('userId')
+                );
+            }
+        } else {
+            $user = new User();
+            $user->setName($request->get('name'));
+            $user->setSurname($request->get('surname'));
+            $user->setEmail($request->get('email'));
+            $entityManager->persist($user);
+        }
+
         $membership = new Membership();
-        $user = $entityManager->getRepository(User::class)->find($request->get('userId'));
+        $user->setApprove(1);
         $membership->setUser($user);
         $membership->setStatus($request->get('status'));
         $membership->setExpiredAt(new DateTime($request->get('expiredAt')));
         $entityManager->persist($membership);
         $entityManager->flush();
+
         $jsonObject = $serializer->serialize($membership, 'json');
+
 
         return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
     }
@@ -65,15 +83,15 @@ class MembershipsController extends AbstractController
     public function updateMembership(Membership $membership, Request $request, SerializerInterface $serializer)
     {
         $entityManager = $this->getDoctrine()->getManager();
+
         $membership->setStatus($request->get('status'));
         $membership->setExpiredAt(new DateTime($request->get('expiredAt')));
+        $membership->getUser()->setName($request->get('name'));
+        $membership->getUser()->setSurname($request->get('surname'));
+        $membership->getUser()->setEmail($request->get('email'));
         $entityManager->flush();
 
-        $jsonObject = $serializer->serialize($membership, 'json', [
-            'circular_reference_handler' => function ($object) {
-                return $object->getId();
-            }
-        ]);
+        $jsonObject = $serializer->serialize($membership, 'json');
 
         return JsonResponse::fromJsonString($jsonObject, JsonResponse::HTTP_CREATED);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -71,27 +70,6 @@ class User
      * @ORM\Column(type="string", length=10)
      */
     private $approve;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="membership", orphanRemoval=true)
-     */
-    private $invoice;
-
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
-    private $status;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $expired_at;
-
-
-    public function __construct()
-    {
-        $this->invoice = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -232,50 +210,5 @@ class User
     public function setRole($role): void
     {
         $this->role = $role;
-    }
-
-    public function addInvoice(Invoice $invoice): self
-    {
-        if (!$this->invoice->contains($invoice)) {
-            $this->invoice[] = $invoice;
-            $invoice->setUser($this);
-        }
-        return $this;
-    }
-
-    public function removeInvoice(Invoice $invoice): self
-    {
-        if ($this->invoice->contains($invoice)) {
-            $this->invoice->removeElement($invoice);
-            // set the owning side to null (unless already changed)
-            if ($invoice->getUser() === $this) {
-                $invoice->setUser(null);
-            }
-        }
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getExpiredAt(): ?\DateTimeInterface
-    {
-        return $this->expired_at;
-    }
-
-    public function setExpiredAt(\DateTimeInterface $expired_at): self
-    {
-        $this->expired_at = clone $expired_at;
-
-        return $this;
     }
 }
