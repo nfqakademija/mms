@@ -60,6 +60,7 @@ class MembershipsController extends AbstractController
             $user->setName($request->get('name'));
             $user->setSurname($request->get('surname'));
             $user->setEmail($request->get('email'));
+            $user->setMobilePhone($request->get('mobilePhone'));
             $entityManager->persist($user);
         }
 
@@ -89,6 +90,7 @@ class MembershipsController extends AbstractController
         $membership->getUser()->setName($request->get('name'));
         $membership->getUser()->setSurname($request->get('surname'));
         $membership->getUser()->setEmail($request->get('email'));
+        $membership->getUser()->setMobilePhone($request->get('mobilePhone'));
         $entityManager->flush();
 
         $jsonObject = $serializer->serialize($membership, 'json');
