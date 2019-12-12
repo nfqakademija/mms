@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { userActions } from "./actions/user.actions";
+import { membershipActions } from "./actions/membership.actions";
 
 import { store } from "./core/store";
 import Home from "./pages/Home";
-import Users from "./pages/Users";
+import Memberships from "./pages/Memberships";
 import "..//css/app.scss";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Requests from "./pages/Requests";
@@ -18,8 +19,8 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(process.env);
     dispatch(userActions.getAll());
+    dispatch(membershipActions.getAll());
   }, []);
   if (admin.loggedIn) {
     return (
@@ -29,9 +30,7 @@ function App() {
             <Route path="/requests">
               <Requests />
             </Route>
-
-            <Route path="/users" component={Users} />
-
+            <Route path="/users" component={Memberships} />
             <Route component={Home} />
           </Switch>
         </BrowserRouter>

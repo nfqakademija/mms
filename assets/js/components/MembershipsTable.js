@@ -3,21 +3,23 @@ import MaterialTable from "material-table";
 import API from "../core/api";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
-import { userActions } from "../actions/user.actions";
+import { membershipActions } from "../actions/membership.actions";
+
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 
 //TODO Loading and alert banners//
 
-export default function UsersTable() {
-  const users = useSelector(state => state.users);
+export default function MembershipsTable() {
+  const memberships = useSelector(state => state.memberships);
 
   const dispatch = useDispatch();
 
   const columns = [
-    { title: "Vardas", field: "name" },
-    { title: "Pavarde", field: "surname" },
-    { title: "El. Pastas", field: "email" },
+    { title: "Vardas", field: "user.name" },
+    { title: "Pavarde", field: "user.surname" },
+    { title: "El. Pastas", field: "user.email" },
+    { title: "Telefono Nr.", field: "user.mobilePhone" },
     { title: "Statusas", field: "status" },
     { title: "Galioja iki", field: "expiredAt", type: "date" }
   ];
@@ -30,7 +32,7 @@ export default function UsersTable() {
       }}
       title="Vartotojai"
       columns={columns}
-      data={users.items}
+      data={memberships.items}
       detailPanel={[
         {
           icon: "comment-edit",
@@ -61,19 +63,20 @@ export default function UsersTable() {
       editable={{
         onRowAdd: newData =>
           new Promise(resolve => {
-            const name = newData.name;
-            const surname = newData.surname;
-            const email = newData.email;
+            const name = newData.user.name;
+            const surname = newData.user.surname;
+            const email = newData.user.email;
+            const mobilePhone = newData.user.mobilePhone;
             const status = newData.status;
             const expiredAt = newData.expiredAt;
 
             dispatch(
-              userActions.create({
+              membershipActions.create({
                 name,
                 surname,
                 email,
+                mobilePhone,
                 status,
-                approve,
                 expiredAt
               })
             );
@@ -81,20 +84,21 @@ export default function UsersTable() {
           }),
         onRowUpdate: (newData, oldData) =>
           new Promise(resolve => {
-            const name = newData.name;
-            const surname = newData.surname;
-            const email = newData.email;
+            const name = newData.user.name;
+            const surname = newData.user.surname;
+            const email = newData.user.email;
+            const mobilePhone = newData.user.mobilePhone;
             const status = newData.status;
             const expiredAt = newData.expiredAt;
             const id = oldData.id;
             dispatch(
-              userActions.update({
+              membershipActions.update({
                 id,
                 name,
                 surname,
                 email,
                 status,
-                approve,
+                mobilePhone,
                 expiredAt
               })
             );
@@ -103,7 +107,7 @@ export default function UsersTable() {
 
         onRowDelete: oldData =>
           new Promise(resolve => {
-            dispatch(userActions.delete(oldData.id));
+            dispatch(membershipActions.delete(oldData.id));
             resolve();
           })
       }}

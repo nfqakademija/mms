@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import UsersTable from "../components/UsersTable";
+import MembershipsTable from "../components/MembershipsTable";
 import SideNav from "../components/SideNav";
-export default class Users extends Component {
+export default class Memberships extends Component {
   render() {
     return (
       <div style={{ display: "flex" }}>
         <SideNav />
         <main style={{ width: "100%" }}>
-          <UsersTable />
+          <MembershipsTable />
         </main>
       </div>
     );
