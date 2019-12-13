@@ -220,4 +220,22 @@ class UsersController extends AbstractController
 
         return new Response($this->get('serializer')->serialize($user, 'json'));
     }
+
+    /**
+     * @Route("/api/notapproved", name="not_approved", methods="GET")
+     */
+    public function getNotApprovedUsers(SerializerInterface $serializer)
+    {
+        $users = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findByApprove(0);
+
+        $jsonContent = $serializer->serialize($users, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return new Response($jsonContent);
+    }
 }
