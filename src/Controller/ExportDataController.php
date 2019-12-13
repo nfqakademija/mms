@@ -40,6 +40,7 @@ class ExportDataController extends AbstractController
                     $user->getLinkedin()]
             );
         }
+        
         $csv->output('users.csv');
         return new Response('');
     }
