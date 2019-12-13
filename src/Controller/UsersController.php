@@ -81,14 +81,18 @@ class UsersController extends AbstractController
     /**
      * @Route("/api/users", name="users_getall", methods="GET")
      */
-    public function getUsers()
+    public function getUsers(SerializerInterface $serializer)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        // get all data from database
-        $user = $entityManager->getRepository(User::class)->findAll();
+        $users = $entityManager->getRepository(User::class)->findAll();
 
-        $jsonContent = $this->get('serializer')->serialize($user, 'json');
+        $jsonContent = $serializer->serialize($users, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
         return new Response($jsonContent);
     }
 
@@ -98,7 +102,13 @@ class UsersController extends AbstractController
      */
     public function getOneUser(User $user)
     {
-        return new Response($this->get('serializer')->serialize($user, 'json'));
+        $jsonContent = $serializer->serialize($user, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return new Response($jsonContent);
     }
 
     /**
