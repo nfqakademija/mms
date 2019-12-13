@@ -19,7 +19,7 @@ class ExportDataController extends AbstractController
 
 
     /**
-     * @Route("/api/export/users", name="export_data", methods="GET")
+     * @Route("/api/export/users", name="export_data_users", methods="GET")
      */
     public function exportUsers()
     {
@@ -45,7 +45,7 @@ class ExportDataController extends AbstractController
     }
 
     /**
-     * @Route("/api/export/invoices", name="export_data", methods="GET")
+     * @Route("/api/export/invoices", name="export_data_invoices", methods="GET")
      */
     public function exportInvoices()
     {
