@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class CommentsController extends AbstractController
 {
@@ -115,7 +116,7 @@ class CommentsController extends AbstractController
      * @param int $u_id
      * @return Response
      */
-    public function putComment(Request $request, CommentRepository $commRep, int $u_id)
+    public function putComment(Request $request, CommentRepository $commRep, int $u_id, SerializerInterface $serializer)
     {
         if (! $request->get('text')) {
             return $this->respondValidationError('Please provide comment!');
@@ -127,12 +128,18 @@ class CommentsController extends AbstractController
 
         $comment = new Comment();
         $comment->setText($request->get('text'));
-        $comment->setUserId($user);
+        $comment->setUser($user);
 
         $entityManager->persist($comment);
         $entityManager->flush();
 
-        return new Response($this->get('serializer')->serialize($comment, 'json'));
+        $jsonObject = $serializer->serialize($comment, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return new Response($jsonObject);
     }
 
     /**
