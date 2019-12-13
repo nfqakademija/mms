@@ -84,11 +84,17 @@
     "egulias/email-validator": {
         "version": "2.1.11"
     },
+    "egyg33k/csv-bundle": {
+        "version": "1.0.1"
+    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.37"
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "league/csv": {
+        "version": "9.4.1"
     },
     "nikic/php-parser": {
         "version": "v4.2.4"
