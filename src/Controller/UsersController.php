@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UsersController extends AbstractController
@@ -208,5 +209,23 @@ class UsersController extends AbstractController
         $entityManager->flush();
 
         return new Response($this->get('serializer')->serialize($user, 'json'));
+    }
+
+    /**
+     * @Route("/api/notapproved", name="not_approved", methods="GET")
+     */
+    public function getNotApprovedUsers(SerializerInterface $serializer)
+    {
+        $users = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findByApprove(0);
+
+        $jsonContent = $serializer->serialize($users, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+        return new Response($jsonContent);
     }
 }
