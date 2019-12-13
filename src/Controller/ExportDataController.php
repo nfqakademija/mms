@@ -19,7 +19,7 @@ class ExportDataController extends AbstractController
 
 
     /**
-     * @Route("/api/export", name="export_data", methods="GET")
+     * @Route("/api/export/users", name="export_data", methods="GET")
      */
     public function exportUsers()
     {
@@ -41,6 +41,15 @@ class ExportDataController extends AbstractController
             );
         }
         $csv->output('users.csv');
+        return new Response('');
+    }
+
+    /**
+     * @Route("/api/export/invoices", name="export_data", methods="GET")
+     */
+    public function exportInvoices()
+    {
+        //soon
         return new Response('');
     }
 }
