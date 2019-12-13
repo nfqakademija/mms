@@ -33,14 +33,13 @@ class ExportDataController extends AbstractController
 
         $users = $entityManager->getRepository(User::class)->findAll();
 
-        foreach($users as $user)
-        {
+        foreach($users as $user) {
             $csv->insertOne(
                 [$user->getName(), $user->getSurname(), $user->getEmail(), $user->getUrl(), $user->getMobilePhone(),
                     $user->getLinkedin()]
             );
         }
-        
+
         $csv->output('users.csv');
         return new Response('');
     }
