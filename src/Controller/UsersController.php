@@ -100,7 +100,7 @@ class UsersController extends AbstractController
     /**
      * @Route("/api/users/{id}", defaults={"_format"="json"}, name="users_get", methods="GET")
      */
-    public function getOneUser(User $user)
+    public function getOneUser(User $user, SerializerInterface $serializer)
     {
         $jsonContent = $serializer->serialize($user, 'json', [
             'circular_reference_handler' => function ($object) {
