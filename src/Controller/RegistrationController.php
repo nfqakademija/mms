@@ -33,12 +33,12 @@ class RegistrationController extends AbstractController
         CustomerRepository $customerRepository,
         UserPasswordEncoderInterface $passwordEncoder,
         EntityManagerInterface $entityManager
-    )
-    {
+    ) {
         $this->customerRepository = $customerRepository;
         $this->passwordEncoder = $passwordEncoder;
         $this->entityManager = $entityManager;
     }
+
     /**
      * @Route("/api/registration", name="registration")
      */
