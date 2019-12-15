@@ -29,7 +29,11 @@ class RegistrationController extends AbstractController
      */
     private $entityManager;
 
-    public function __construct(CustomerRepository $customerRepository, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
+    public function __construct(
+        CustomerRepository $customerRepository,
+        UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->customerRepository = $customerRepository;
         $this->passwordEncoder = $passwordEncoder;
@@ -59,6 +63,7 @@ class RegistrationController extends AbstractController
         $this->entityManager->persist($customer);
         $this->entityManager->flush();
 
-        return JsonResponse::fromJsonString($customer, JsonResponse::HTTP_CREATED)->setContext((new Context())->setGroups(['public']));
+        return JsonResponse::fromJsonString($customer, JsonResponse::HTTP_CREATED)
+            ->setContext((new Context())->setGroups(['public']));
     }
 }
