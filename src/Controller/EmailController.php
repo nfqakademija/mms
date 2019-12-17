@@ -14,8 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EmailController extends AbstractController
 {
-    const RECEIVED_SUBJECT = "Prašymas gautas";
-    const APPROVED_SUBJECT = "Narystė patvirtinta";
+    const RECEIVED_SUBJECT = "LGDA - Prašymas gautas";
+    const APPROVED_SUBJECT = "LGDA - Narystė patvirtinta";
     const NOT_APPROVED_SUBJECT = "Narystė nepatvirtinta";
     const SUCCESFUL_PAYMENT_SUBJECT = "Mokėjimas priimtas";
     const NOT_SUCCESFUL_PAYMENT_SUBJECT = "Mokėjimas nepriimtas";
@@ -27,8 +27,10 @@ class EmailController extends AbstractController
     const NOTIFICATION_FOR_ADMIN = "Gauta nauja paraiška";
 
 
-    const RECEIVED_CONTENT = "<h1>Prašymas gautas</h1>";
-    const APPROVED_CONTENT = "<h1>Narystė patvirtinta</h1>";
+    const RECEIVED_CONTENT = "<h1>Prašymas gautas</h1>
+                Sveiki, gavome jūsų prašymą, ją peržvelgsime per artimiausias 24 valandas";
+    const APPROVED_CONTENT = "<h1>Narystė patvirtinta</h1>
+                Sveiki, jūsų narystė patvirtinta";
     const NOT_APPROVED_CONTENT = "<h1>Narystė nepatvirtinta</h1>";
     const SUCCESFUL_PAYMENT_CONTENT = "<h1>Mokėjimas priimtas</h1>";
     const NOT_SUCCESFUL_PAYMENT_CONTENT = "<h1>Mokėjimas nepriimtas</h1>";
