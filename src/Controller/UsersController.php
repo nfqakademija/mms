@@ -167,7 +167,8 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        return new Response($this->get('serializer')->serialize($user, 'json'));
+        $this->setStatusCode(200);
+        return $this->respond('Succesfully deleted!');
     }
 
     /**
