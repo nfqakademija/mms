@@ -231,7 +231,7 @@ class UsersController extends AbstractController
     /**
      * @Route("/api/request", defaults={"_format"="json"}, name="users_request", methods="PUT")
      */
-    public function createUser(Request $request, UserRepository $userRepository, ValidatorInterface $validator)
+    public function usersRequest(Request $request, UserRepository $userRepository, ValidatorInterface $validator)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
