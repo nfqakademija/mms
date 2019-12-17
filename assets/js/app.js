@@ -15,14 +15,14 @@ import Request from "./pages/Request";
 import Login from "./pages/Login";
 
 function App() {
-  const admin = useSelector(state => state.admin);
+  const loggedIn = useSelector(state => state.auth.loggedIn);
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(userActions.getRequests());
     dispatch(membershipActions.getAll());
-  }, []);
-  if (admin.loggedIn) {
+  }, [loggedIn]);
+
+  if (loggedIn) {
     return (
       <div>
         <BrowserRouter>
@@ -30,8 +30,7 @@ function App() {
             <Route path="/requests">
               <Requests />
             </Route>
-            <Route path="/users" component={Memberships} />
-            <Route component={Home} />
+            <Route component={Memberships} />
           </Switch>
         </BrowserRouter>
       </div>

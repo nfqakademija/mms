@@ -4,6 +4,8 @@ import API from "../core/api";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "../actions/user.actions";
+import { membershipActions } from "../actions/membership.actions";
+
 import EntryMessageDialog from "./EntryMessageDialog";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -18,8 +20,7 @@ import {
 
 export default function RequestsList() {
   const requests = useSelector(state => state.users.requests);
-
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // useEffect(() => {
   //   dispatch(membershipActions.getAll());
   //   dispatch(userActions.getAll());
@@ -27,6 +28,12 @@ export default function RequestsList() {
   function openInNewTab(url) {
     var win = window.open(url, "_blank");
     win.focus();
+  }
+  function deleteReqeust(id) {
+    dispatch(userActions.delete(id));
+  }
+  function approveRequest(id) {
+    dispatch(membershipActions.assign(id));
   }
   return (
     <div>
@@ -66,11 +73,17 @@ export default function RequestsList() {
                 <EntryMessageDialog message={request.entryText} />
               </TableCell>
               <TableCell>
-                <IconButton aria-label="delete">
-                  <DeleteIcon color="secondary" />
-                </IconButton>
-                <IconButton aria-label="approve">
+                <IconButton
+                  onClick={() => approveRequest(request.id)}
+                  aria-label="approve"
+                >
                   <CheckCircleOutlineIcon style={{ color: "green" }} />
+                </IconButton>
+                <IconButton
+                  onClick={() => deleteReqeust(request.id)}
+                  aria-label="delete"
+                >
+                  <DeleteIcon color="secondary" />
                 </IconButton>
               </TableCell>
             </TableRow>

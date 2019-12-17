@@ -31,7 +31,6 @@ export function users(
     case userConstants.CREATE_SUCCESS:
       let items = state.items;
       items.push(action.user);
-      console.log(items);
       return {
         ...state,
         items: items
@@ -70,6 +69,7 @@ export function users(
     case userConstants.DELETE_SUCCESS:
       // remove deleted user from state
       return {
+        ...state,
         items: state.items.filter(user => user.id !== action.id)
       };
     case userConstants.DELETE_FAILURE:
@@ -123,6 +123,12 @@ export function users(
         ...state,
         error: action.error,
         requests: []
+      };
+    case userConstants.REMOVE_REQUEST:
+      return {
+        ...state,
+        requests: state.requests.filter(user => user.id !== action.id),
+        requestsCount: action.requests.length
       };
     default:
       return state;

@@ -1,11 +1,13 @@
 import { membershipConstants } from "../constants/membership.constants";
+import { userActions } from "./user.actions";
 import { membershipService } from "../services/membership.service";
 export const membershipActions = {
   create,
   getAll,
   getById,
   delete: _delete,
-  update
+  update,
+  assign
 };
 function create(membership) {
   return dispatch => {
@@ -27,9 +29,31 @@ function create(membership) {
     return { type: membershipConstants.CREATE_FAILURE, error };
   }
 }
+function assign(userId) {
+  return dispatch => {
+    dispatch(request());
+
+    membershipService.assign(userId).then(
+      newUser => {
+        dispatch(userActions.removeRequest(newUser.user.id)),
+          dispatch(success(newUser));
+      },
+      error => dispatch(failure(error.toString()))
+    );
+  };
+  function request() {
+    return { type: membershipConstants.CREATE_REQUEST };
+  }
+  function success(membership) {
+    return { type: membershipConstants.CREATE_SUCCESS, membership };
+  }
+  function failure(error) {
+    return { type: membershipConstants.CREATE_FAILURE, error };
+  }
+}
 function update(membership) {
   return dispatch => {
-    dispatch(request(membership));
+    dispatch(request());
 
     membershipService.update(membership).then(
       membership => dispatch(success(membership)),
@@ -38,10 +62,9 @@ function update(membership) {
   };
 
   function request(membership) {
-    return { type: membershipConstants.UPDATE_REQUEST, membership };
+    return { type: membershipConstants.UPDATE_REQUEST };
   }
   function success(membership) {
-    console.log(membership);
     return { type: membershipConstants.UPDATE_SUCCESS, membership };
   }
   function failure(error) {

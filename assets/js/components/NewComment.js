@@ -21,19 +21,16 @@ export default function NewComment() {
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open form dialog
+        Pridėti
       </Button>
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle id="form-dialog-title">Pridėti Komentarą</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
-          </DialogContentText>
+          <DialogContentText>Iveskite Naują Komentarą</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -45,10 +42,10 @@ export default function NewComment() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            Atšaukti
           </Button>
           <Button onClick={handleClose} color="primary">
-            Subscribe
+            Pridėti
           </Button>
         </DialogActions>
       </Dialog>

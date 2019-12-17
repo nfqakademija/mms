@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import DescriptionIcon from "@material-ui/icons/Description";
+import { userActions } from "../actions/user.actions";
+
 import {
   Container,
   Card,
@@ -22,11 +24,27 @@ export default function RequestForm() {
     alert("delete");
   }
   const [state, setState] = React.useState({
-    checkbox: false
+    checkbox: false,
+    name: "",
+    surname: "",
+    email: "",
+    mobilePhone: "",
+    linkedIn: "",
+    url: "",
+    enterText: ""
   });
-
   const handleChange = name => event => {
+    setState({ ...state, [name]: event.target.value });
+  };
+  const handleCheckBox = name => event => {
     setState({ ...state, [name]: event.target.checked });
+  };
+  const handleSubmit = () => {
+    if (state.name && state.surname && state.email && state.mobilePhone) {
+      dispatch(userActions.createRequest(state));
+    } else {
+      alert("Not good enough");
+    }
   };
 
   return (
@@ -37,59 +55,83 @@ export default function RequestForm() {
       <Card style={{ padding: "20px" }}>
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <TextField label="Vardas" fullWidth />
+            <TextField
+              inputProps={{ maxLength: 50 }}
+              label="Vardas"
+              value={state.name}
+              onChange={handleChange("name")}
+              fullWidth
+            />
           </Grid>
           <Grid item xs={6}>
-            <TextField label="Pavarde" fullWidth />
+            <TextField
+              inputProps={{ maxLength: 50 }}
+              value={state.surname}
+              onChange={handleChange("surname")}
+              label="Pavarde"
+              fullWidth
+            />
           </Grid>
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <TextField label="El. Paštas" fullWidth />
+            <TextField
+              inputProps={{ maxLength: 50 }}
+              label="El. Paštas"
+              value={state.email}
+              onChange={handleChange("email")}
+              fullWidth
+            />
           </Grid>
           <Grid item xs={6}>
-            <TextField label="Telefono Nr." fullWidth />
+            <TextField
+              inputProps={{ maxLength: 20 }}
+              value={state.mobilePhone}
+              onChange={handleChange("mobilePhone")}
+              label="Telefono Nr."
+              fullWidth
+            />
           </Grid>
         </Grid>
       </Card>
       <Card style={{ padding: "20px", marginTop: "20px" }}>
         <Grid container spacing={3}>
           <Grid xs item={12}>
-            <TextField label="Nuoroda i LinkedIN profilį" fullWidth />
+            <TextField
+              inputProps={{ maxLength: 128 }}
+              value={state.linkedIn}
+              onChange={handleChange("linkedIn")}
+              label="Nuoroda i LinkedIN profilį"
+              fullWidth
+            />
           </Grid>
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <TextField label="Nuoroda į portfolio" fullWidth />
+            <TextField
+              inputProps={{ maxLength: 128 }}
+              value={state.url}
+              onChange={handleChange("url")}
+              label="Nuoroda į portfolio"
+              fullWidth
+            />
           </Grid>
         </Grid>
       </Card>
+
       <Card style={{ padding: "20px", marginTop: "20px" }}>
-        <Typography variant="h6" style={{ marginBottom: "30px" }}>
-          Įterpti papildomus faillus
-        </Typography>
-        <Grid container spacing={3}>
-          <Chip
-            icon={DescriptionIcon}
-            label="text.txt"
-            onDelete={handleDelete}
+        <Grid>
+          <TextField
+            variant="outlined"
+            multiline
+            label="Papildoma žinutė(128 simboliai)"
+            value={state.enterText}
+            onChange={handleChange("enterText")}
+            fullWidth
+            inputProps={{ maxLength: 128 }}
           />
-          <Grid item xs={6}>
-            <input
-              accept="image/*"
-              style={{ display: "none" }}
-              id="raised-button-file"
-              multiple
-              type="file"
-            />
-            <label htmlFor="raised-button-file">
-              <Button variant="contained" component="span">
-                Upload
-              </Button>
-            </label>
-          </Grid>
         </Grid>
       </Card>
       <Card style={{ padding: "20px", marginTop: "20px" }}>
@@ -99,7 +141,7 @@ export default function RequestForm() {
               <Checkbox
                 checked={state.checkbox}
                 value="checkbox"
-                onChange={handleChange("checkbox")}
+                onChange={handleCheckBox("checkbox")}
                 color="primary"
               />
             }
@@ -112,6 +154,7 @@ export default function RequestForm() {
           size="medium"
           color="primary"
           style={{ marginTop: "20px" }}
+          onClick={() => handleSubmit()}
         >
           Pateikti
         </Button>

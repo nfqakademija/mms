@@ -8,7 +8,8 @@ export const userService = {
   _delete,
   addComment,
   deleteComment,
-  getRequests
+  getRequests,
+  createRequest
 };
 async function getAll() {
   return await api()
@@ -88,9 +89,12 @@ async function create(user) {
   const name = user.name;
   const surname = user.surname;
   const email = user.email;
+  const mobilePhone = user.mobilePhone;
   const approve = user.approve;
-  const status = user.status;
-  const expiredAt = user.expiredAt;
+  const enterText = user.enterText;
+  const url = user.url;
+  const linkedIn = user.linkedIn;
+
   return await api()
     .put(ROUTES.USERS, null, {
       params: {
@@ -98,8 +102,41 @@ async function create(user) {
         surname,
         email,
         approve,
-        status,
-        expiredAt
+        mobilePhone,
+        enterText,
+        url,
+        linkedIn
+      }
+    })
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+async function createRequest(user) {
+  const name = user.name;
+  const surname = user.surname;
+  const email = user.email;
+  const mobilePhone = user.mobilePhone;
+  const enterText = user.enterText;
+  const url = user.url;
+  const linkedIn = user.linkedIn;
+
+  return await api()
+    .post(ROUTES.REQUEST, null, {
+      params: {
+        name,
+        surname,
+        email,
+        mobilePhone,
+        enterText,
+        url,
+        linkedIn
       }
     })
     .then(response => {

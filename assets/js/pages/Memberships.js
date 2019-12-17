@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import MembershipsTable from "../components/MembershipsTable";
 import SideNav from "../components/SideNav";
 export default class Memberships extends Component {

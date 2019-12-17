@@ -27,7 +27,6 @@ export function memberships(state = { items: [] }, action) {
     case membershipConstants.CREATE_SUCCESS:
       let items = state.items;
       items.push(action.membership);
-      console.log(items);
       return {
         ...state,
         items: items
