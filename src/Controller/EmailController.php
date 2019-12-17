@@ -62,6 +62,10 @@ class EmailController extends AbstractController
             return $this->respondValidationError('Please provide a recipient!');
         }
 
+        if (! $request->get('subject')) {
+            return $this->respondValidationError('Please provide subject!');
+        }
+
         $username = $_ENV['GMAIL_USERNAME'];
         $password = $_ENV['GMAIL_PASSWORD'];
         $transport = new GmailTransport($username, $password);
@@ -70,7 +74,7 @@ class EmailController extends AbstractController
         $email = (new Email())
             ->from('lgdamailer@gmail.com')
             ->to($request->get('recipient'))
-            ->subject('This email is to try out sending emails with symfony')
+            ->subject($request->get('subject'))
             ->text($request->get('text'));
 
         try {
