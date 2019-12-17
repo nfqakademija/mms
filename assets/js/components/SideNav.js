@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { adminActions } from "../actions/admin.actions";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -73,6 +73,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SideNav() {
+  const requestsCount = useSelector(state => state.users.requestsCount);
+
   const dispatch = useDispatch();
 
   function logout() {
@@ -164,9 +166,13 @@ export default function SideNav() {
             }}
           >
             <ListItemIcon>
-              <Badge badgeContent={3} color="primary">
+              {requestsCount === 0 ? (
                 <PersonAddOutlinedIcon />
-              </Badge>
+              ) : (
+                <Badge badgeContent={requestsCount} color="primary">
+                  <PersonAddOutlinedIcon />
+                </Badge>
+              )}
             </ListItemIcon>
             <ListItemText primary="Užklausos" />
           </ListItem>

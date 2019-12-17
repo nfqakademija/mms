@@ -1,6 +1,10 @@
 import { userConstants } from "../constants/user.constants";
+import { membershipActions } from "../actions/membership.actions";
 
-export function users(state = { items: [] }, action) {
+export function users(
+  state = { items: [], requests: [], requestsCount: 0 },
+  action
+) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
       return {
@@ -101,6 +105,24 @@ export function users(state = { items: [] }, action) {
       return {
         ...state,
         error: action.error
+      };
+    case userConstants.REQUESTS_GETALL_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case userConstants.REQUESTS_GETALL_SUCCESS:
+      return {
+        ...state,
+        requests: action.requests,
+        requestsCount: action.requests.length
+      };
+    case userConstants.REQUESTS_GETALL_FAILURE:
+      return {
+        ...state,
+        error: action.error,
+        requests: []
       };
     default:
       return state;

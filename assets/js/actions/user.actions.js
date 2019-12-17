@@ -7,46 +7,47 @@ export const userActions = {
   delete: _delete,
   update,
   addComment,
-  deleteComment
+  deleteComment,
+  getRequests
 };
 function addComment(comment) {
   return dispatch => {
     dispatch(request(comment));
 
-    userService.addComment.then(
+    userService.addComment(comment).then(
       newComment => dispatch(success(newComment)),
       error => dispatch(failure(error.toString()))
     );
   };
 
   function request(comment) {
-    return { type: userConstants.CREATE_REQUEST, comment };
+    return { type: userConstants.COMMENT_ADD_REQUEST, comment };
   }
   function success(comment) {
-    return { type: userConstants.CREATE_SUCCESS, comment };
+    return { type: userConstants.COMMENT_ADD_SUCCESS, comment };
   }
   function failure(error) {
-    return { type: userConstants.CREATE_FAILURE, error };
+    return { type: userConstants.COMMENT_ADD_FAILURE, error };
   }
 }
 function deleteComment(comment) {
   return dispatch => {
-    dispatch(request(user));
+    dispatch(request(comment));
 
-    userService.create(user).then(
-      newUser => dispatch(success(newUser)),
+    userService.deleteComment(comment).then(
+      comment => dispatch(success(comment)),
       error => dispatch(failure(error.toString()))
     );
   };
 
-  function request(user) {
-    return { type: userConstants.CREATE_REQUEST, user };
+  function request(comment) {
+    return { type: userConstants.COMMENT_DELETE_REQUEST, comment };
   }
-  function success(user) {
-    return { type: userConstants.CREATE_SUCCESS, user };
+  function success(comment) {
+    return { type: userConstants.COMMENT_DELETE_SUCCESS, comment };
   }
   function failure(error) {
-    return { type: userConstants.CREATE_FAILURE, error };
+    return { type: userConstants.COMMENT_DELETE_FAILURE, error };
   }
 }
 function create(user) {
@@ -108,6 +109,26 @@ function getAll() {
   }
   function failure(error) {
     return { type: userConstants.GETALL_FAILURE, error };
+  }
+}
+function getRequests() {
+  return dispatch => {
+    dispatch(request());
+
+    userService.getRequests().then(
+      requests => dispatch(success(requests)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.REQUESTS_GETALL_REQUEST };
+  }
+  function success(requests) {
+    return { type: userConstants.REQUESTS_GETALL_SUCCESS, requests };
+  }
+  function failure(error) {
+    return { type: userConstants.REQUESTS_GETALL_FAILURE, error };
   }
 }
 function getById(id) {

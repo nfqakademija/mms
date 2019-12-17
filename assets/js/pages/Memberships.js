@@ -6,7 +6,7 @@ export default class Memberships extends Component {
     return (
       <div style={{ display: "flex" }}>
         <SideNav />
-        <main style={{ width: "100%" }}>
+        <main>
           <MembershipsTable />
         </main>
       </div>

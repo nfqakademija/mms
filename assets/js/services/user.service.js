@@ -7,11 +7,25 @@ export const userService = {
   update,
   _delete,
   addComment,
-  deleteComment
+  deleteComment,
+  getRequests
 };
 async function getAll() {
   return await api()
     .get(ROUTES.USERS)
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+async function getRequests() {
+  return await api()
+    .get(ROUTES.USERS + "?approved=0")
     .then(response => {
       const { status, data } = response;
       if (status == 200) {

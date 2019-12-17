@@ -19,7 +19,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(userActions.getAll());
+    dispatch(userActions.getRequests());
     dispatch(membershipActions.getAll());
   }, []);
   if (admin.loggedIn) {

@@ -6,7 +6,7 @@ export default class Requests extends Component {
     return (
       <div style={{ display: "flex" }}>
         <SideNav />
-        <main>
+        <main style={{ width: "100%" }}>
           <RequestsList />
         </main>
       </div>
