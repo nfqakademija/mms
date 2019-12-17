@@ -81,11 +81,17 @@ class UsersController extends AbstractController
     /**
      * @Route("/api/users", name="users_getall", methods="GET")
      */
-    public function getUsers(SerializerInterface $serializer)
+    public function getUsers(SerializerInterface $serializer, Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $users = $entityManager->getRepository(User::class)->findAll();
+        if ($request->query->has('approved')) {
+            $users = $this->getDoctrine()
+                ->getRepository(User::class)
+                ->findByApprove($request->get('approved'));
+        } else {
+            $users = $entityManager->getRepository(User::class)->findAll();
+        }
 
         $jsonContent = $serializer->serialize($users, 'json', [
             'circular_reference_handler' => function ($object) {
@@ -219,23 +225,5 @@ class UsersController extends AbstractController
         $entityManager->flush();
 
         return new Response($this->get('serializer')->serialize($user, 'json'));
-    }
-
-    /**
-     * @Route("/api/notapproved", name="not_approved", methods="GET")
-     */
-    public function getNotApprovedUsers(SerializerInterface $serializer)
-    {
-        $users = $this->getDoctrine()
-            ->getRepository(User::class)
-            ->findByApprove(0);
-
-        $jsonContent = $serializer->serialize($users, 'json', [
-            'circular_reference_handler' => function ($object) {
-                return $object->getId();
-            }
-        ]);
-
-        return new Response($jsonContent);
     }
 }
