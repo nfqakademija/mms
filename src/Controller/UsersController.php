@@ -264,6 +264,9 @@ class UsersController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
+        $email = new EmailController();
+        $email->sendEmail($user->getEmail(), EmailController::RECEIVED_SUBJECT, EmailController::RECEIVED_CONTENT);
+        
         return new Response($this->get('serializer')->serialize($user, 'json'));
     }
 }
