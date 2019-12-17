@@ -45,7 +45,7 @@ export default function MembershipsTable() {
   ];
 
   return (
-    <div style={{ width: "100%" }}>
+    <div>
       <Dialog
         fullWidth
         open={open}
