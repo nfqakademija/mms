@@ -227,4 +227,43 @@ class UsersController extends AbstractController
 
         return new Response($this->get('serializer')->serialize($user, 'json'));
     }
+
+    /**
+     * @Route("/api/request", defaults={"_format"="json"}, name="users_request", methods="POST")
+     */
+    public function usersRequest(Request $request, UserRepository $userRepository, ValidatorInterface $validator)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        if (! $request) {
+            return $this->respondValidationError('Please provide a valid request!');
+        }
+        if (! $request->get('name')) {
+            return $this->respondValidationError('Please provide a name!');
+        }
+        if (! $request->get('surname')) {
+            return $this->respondValidationError('Please provide a surname!');
+        }
+        if (! $request->get('email')) {
+            return $this->respondValidationError('Please provide a email!');
+        }
+
+        $user = new User();
+        $user->setName($request->get('name'));
+        $user->setSurname($request->get('surname'));
+        $user->setEmail($request->get('email'));
+        $user->setApprove(0);
+        $user->setUrl($request->get('url'));
+        $user->setFileName($request->get('file_name'));
+        $user->setLinkedin($request->get('linkedin'));
+        $user->setMobilePhone($request->get('mobilePhone'));
+        $user->setEntryText($request->get('entryText'));
+        $user->setRole($request->get('role'));
+
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return new Response($this->get('serializer')->serialize($user, 'json'));
+    }
 }
