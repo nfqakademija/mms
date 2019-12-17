@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class MembershipsController extends AbstractController
 {
+    const STATUS_ACTIVE = 'active';
     /**
      * @Route("/api/memberships", name="memberships", methods="GET")
      */
@@ -68,11 +69,18 @@ class MembershipsController extends AbstractController
         $membership = new Membership();
         $user->setApprove(1);
         $membership->setUser($user);
-        $membership->setStatus($request->get('status'));
+        if ($request->get('status')) {
+            $membership->setStatus($request->get('status'));
+        } else {
+            $membership->setStatus(self::STATUS_ACTIVE);
+        }
         $membership->setExpiredAt(new DateTime($request->get('expiredAt')));
       
         $entityManager->persist($membership);
         $entityManager->flush();
+
+        $email = new EmailController();
+        $email->sendEmail($user->getEmail(), EmailController::APPROVED_SUBJECT, EmailController::APPROVED_CONTENT);
 
         $jsonObject = $serializer->serialize($membership, 'json', [
             'circular_reference_handler' => function ($object) {

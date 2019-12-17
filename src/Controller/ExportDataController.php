@@ -43,13 +43,4 @@ class ExportDataController extends AbstractController
         $csv->output('users.csv');
         return new Response('');
     }
-
-    /**
-     * @Route("/api/export/invoices", name="export_data_invoices", methods="GET")
-     */
-    public function exportInvoices()
-    {
-        //soon
-        return new Response('');
-    }
 }
