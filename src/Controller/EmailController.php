@@ -49,23 +49,8 @@ class EmailController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/email", name="email", methods="PUT")
-     */
-    public function sendEmail(Request $request)
+    public function sendEmail($emailRecipient, $subject, $content)
     {
-        if (! $request->get('text')) {
-            return $this->respondValidationError('Please provide a text!');
-        }
-
-        if (! $request->get('recipient')) {
-            return $this->respondValidationError('Please provide a recipient!');
-        }
-
-        if (! $request->get('subject')) {
-            return $this->respondValidationError('Please provide subject!');
-        }
-
         $username = $_ENV['GMAIL_USERNAME'];
         $password = $_ENV['GMAIL_PASSWORD'];
         $transport = new GmailTransport($username, $password);
@@ -73,9 +58,9 @@ class EmailController extends AbstractController
 
         $email = (new Email())
             ->from('lgdamailer@gmail.com')
-            ->to($request->get('recipient'))
-            ->subject($request->get('subject'))
-            ->text($request->get('text'));
+            ->to($emailRecipient)
+            ->subject($subject)
+            ->text($content);
 
         try {
             $mailer->send($email);
