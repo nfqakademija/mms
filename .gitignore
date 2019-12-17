@@ -34,5 +34,6 @@ yarn-error.log
 ###< squizlabs/php_codesniffer ###
 
 ###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
+# Commented this, because I cannot push JWT config with this line.
+#/config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
