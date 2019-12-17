@@ -5,7 +5,9 @@ export const userService = {
   create,
   getAll,
   update,
-  _delete
+  _delete,
+  addComment,
+  deleteComment
 };
 async function getAll() {
   return await api()
@@ -20,6 +22,41 @@ async function getAll() {
       return Promise.reject(error);
     });
 }
+async function addComment(comment) {
+  userId = comment.userId;
+  text = comment.text;
+  return await api()
+    .put(ROUTES.USERS + `/${userId}` + ROUTES.COMMENTS, null, {
+      params: {
+        text
+      }
+    })
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+async function deleteComment(comment) {
+  commentId = comment.id;
+  userId = comment.userId;
+  return await api()
+    .delete(ROUTES.USERS + `/${userId}` + ROUTES.COMMENTS + `/${id}`)
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+
 async function _delete(id) {
   return await api()
     .delete(ROUTES.USERS + `/${id}`)

@@ -5,8 +5,50 @@ export const userActions = {
   getAll,
   getById,
   delete: _delete,
-  update
+  update,
+  addComment,
+  deleteComment
 };
+function addComment(comment) {
+  return dispatch => {
+    dispatch(request(comment));
+
+    userService.addComment.then(
+      newComment => dispatch(success(newComment)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request(comment) {
+    return { type: userConstants.CREATE_REQUEST, comment };
+  }
+  function success(comment) {
+    return { type: userConstants.CREATE_SUCCESS, comment };
+  }
+  function failure(error) {
+    return { type: userConstants.CREATE_FAILURE, error };
+  }
+}
+function deleteComment(comment) {
+  return dispatch => {
+    dispatch(request(user));
+
+    userService.create(user).then(
+      newUser => dispatch(success(newUser)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request(user) {
+    return { type: userConstants.CREATE_REQUEST, user };
+  }
+  function success(user) {
+    return { type: userConstants.CREATE_SUCCESS, user };
+  }
+  function failure(error) {
+    return { type: userConstants.CREATE_FAILURE, error };
+  }
+}
 function create(user) {
   return dispatch => {
     dispatch(request(user));

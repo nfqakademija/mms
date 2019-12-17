@@ -83,6 +83,25 @@ export function users(state = { items: [] }, action) {
           return user;
         })
       };
+    case userConstants.USERS_COMMENT_ADD_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+    case userConstants.USERS_COMMENT_ADD_SUCCESS:
+      items = state.items;
+      let userId = items.findIndex(x => x.id === action.comment.user.id);
+      items[userId].comments.push(action.comment);
+
+      return {
+        ...state,
+        items: items
+      };
+    case userConstants.USERS_COMMENT_ADD_FAILURE:
+      return {
+        ...state,
+        error: action.error
+      };
     default:
       return state;
   }
