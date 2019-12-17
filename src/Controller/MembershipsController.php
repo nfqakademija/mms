@@ -74,10 +74,8 @@ class MembershipsController extends AbstractController
         $entityManager->persist($membership);
         $entityManager->flush();
 
-        $emailController = new EmailController();
-        $emailController->sendEmail($user->getEmail(),
-            EmailController::APPROVED_SUBJECT,
-            EmailController::APPROVED_CONTENT);
+        $email = new EmailController();
+        $email->sendEmail($user->getEmail(), EmailController::APPROVED_SUBJECT, EmailController::APPROVED_CONTENT);
 
         $jsonObject = $serializer->serialize($membership, 'json', [
             'circular_reference_handler' => function ($object) {
