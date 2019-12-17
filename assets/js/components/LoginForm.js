@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminActions } from "../actions/admin.actions";
+import { adminActions } from "../actions/auth.actions";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -13,11 +13,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LoginForm() {
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+
   const classes = useStyles();
   const dispatch = useDispatch();
 
   function login() {
-    dispatch(adminActions.login());
+    dispatch(adminActions.login(userName, password));
   }
 
   return (
@@ -28,7 +31,13 @@ export default function LoginForm() {
             <AccountCircle />
           </Grid>
           <Grid item>
-            <TextField required id="username" label="Vartotojo vardas" />
+            <TextField
+              required
+              id="username"
+              label="Vartotojo vardas"
+              value={userName}
+              onChange={e => setUserName(e.target.value)}
+            />
           </Grid>
           <Grid item></Grid>
           <Grid item>
@@ -37,6 +46,8 @@ export default function LoginForm() {
               type="password"
               id="password"
               label="Slaptažodis"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
             />
           </Grid>
           <Button

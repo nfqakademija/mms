@@ -1,8 +1,10 @@
-import { users } from "./users.reducer";
-import { admin } from "./admin.reducer";
+import { users } from "./user.reducer";
+import { memberships } from "./membership.reducer";
+import { auth } from "./auth.reducer";
 import { combineReducers } from "redux";
 
 export default combineReducers({
   users,
-  admin
+  auth,
+  memberships
 });

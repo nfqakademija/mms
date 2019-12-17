@@ -1,6 +1,10 @@
 import { userConstants } from "../constants/user.constants";
+import { membershipActions } from "../actions/membership.actions";
 
-export function users(state = { items: [] }, action) {
+export function users(
+  state = { items: [], requests: [], requestsCount: 0 },
+  action
+) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
       return {
@@ -27,7 +31,6 @@ export function users(state = { items: [] }, action) {
     case userConstants.CREATE_SUCCESS:
       let items = state.items;
       items.push(action.user);
-      console.log(items);
       return {
         ...state,
         items: items
@@ -66,6 +69,7 @@ export function users(state = { items: [] }, action) {
     case userConstants.DELETE_SUCCESS:
       // remove deleted user from state
       return {
+        ...state,
         items: state.items.filter(user => user.id !== action.id)
       };
     case userConstants.DELETE_FAILURE:
@@ -82,6 +86,49 @@ export function users(state = { items: [] }, action) {
 
           return user;
         })
+      };
+    case userConstants.USERS_COMMENT_ADD_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+    case userConstants.USERS_COMMENT_ADD_SUCCESS:
+      items = state.items;
+      let userId = items.findIndex(x => x.id === action.comment.user.id);
+      items[userId].comments.push(action.comment);
+
+      return {
+        ...state,
+        items: items
+      };
+    case userConstants.USERS_COMMENT_ADD_FAILURE:
+      return {
+        ...state,
+        error: action.error
+      };
+    case userConstants.REQUESTS_GETALL_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case userConstants.REQUESTS_GETALL_SUCCESS:
+      return {
+        ...state,
+        requests: action.requests,
+        requestsCount: action.requests.length
+      };
+    case userConstants.REQUESTS_GETALL_FAILURE:
+      return {
+        ...state,
+        error: action.error,
+        requests: []
+      };
+    case userConstants.REMOVE_REQUEST:
+      return {
+        ...state,
+        requests: state.requests.filter(user => user.id !== action.id),
+        requestsCount: action.requests.length
       };
     default:
       return state;

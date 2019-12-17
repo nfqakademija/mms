@@ -5,7 +5,11 @@ export const userService = {
   create,
   getAll,
   update,
-  _delete
+  _delete,
+  addComment,
+  deleteComment,
+  getRequests,
+  createRequest
 };
 async function getAll() {
   return await api()
@@ -20,6 +24,54 @@ async function getAll() {
       return Promise.reject(error);
     });
 }
+async function getRequests() {
+  return await api()
+    .get(ROUTES.USERS + "?approved=0")
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+async function addComment(comment) {
+  userId = comment.userId;
+  text = comment.text;
+  return await api()
+    .put(ROUTES.USERS + `/${userId}` + ROUTES.COMMENTS, null, {
+      params: {
+        text
+      }
+    })
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+async function deleteComment(comment) {
+  commentId = comment.id;
+  userId = comment.userId;
+  return await api()
+    .delete(ROUTES.USERS + `/${userId}` + ROUTES.COMMENTS + `/${id}`)
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+
 async function _delete(id) {
   return await api()
     .delete(ROUTES.USERS + `/${id}`)
@@ -37,9 +89,12 @@ async function create(user) {
   const name = user.name;
   const surname = user.surname;
   const email = user.email;
+  const mobilePhone = user.mobilePhone;
   const approve = user.approve;
-  const status = user.status;
-  const expiredAt = user.expiredAt;
+  const enterText = user.enterText;
+  const url = user.url;
+  const linkedIn = user.linkedIn;
+
   return await api()
     .put(ROUTES.USERS, null, {
       params: {
@@ -47,8 +102,41 @@ async function create(user) {
         surname,
         email,
         approve,
-        status,
-        expiredAt
+        mobilePhone,
+        enterText,
+        url,
+        linkedIn
+      }
+    })
+    .then(response => {
+      const { status, data } = response;
+      if (status == 200) {
+        return data;
+      }
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+}
+async function createRequest(user) {
+  const name = user.name;
+  const surname = user.surname;
+  const email = user.email;
+  const mobilePhone = user.mobilePhone;
+  const enterText = user.enterText;
+  const url = user.url;
+  const linkedIn = user.linkedIn;
+
+  return await api()
+    .post(ROUTES.REQUEST, null, {
+      params: {
+        name,
+        surname,
+        email,
+        mobilePhone,
+        enterText,
+        url,
+        linkedIn
       }
     })
     .then(response => {

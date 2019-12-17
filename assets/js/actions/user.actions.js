@@ -5,13 +5,78 @@ export const userActions = {
   getAll,
   getById,
   delete: _delete,
-  update
+  update,
+  addComment,
+  deleteComment,
+  getRequests,
+  removeRequest,
+  createRequest
 };
+function addComment(comment) {
+  return dispatch => {
+    dispatch(request(comment));
+
+    userService.addComment(comment).then(
+      newComment => dispatch(success(newComment)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request(comment) {
+    return { type: userConstants.COMMENT_ADD_REQUEST, comment };
+  }
+  function success(comment) {
+    return { type: userConstants.COMMENT_ADD_SUCCESS, comment };
+  }
+  function failure(error) {
+    return { type: userConstants.COMMENT_ADD_FAILURE, error };
+  }
+}
+function deleteComment(comment) {
+  return dispatch => {
+    dispatch(request(comment));
+
+    userService.deleteComment(comment).then(
+      comment => dispatch(success(comment)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request(comment) {
+    return { type: userConstants.COMMENT_DELETE_REQUEST, comment };
+  }
+  function success(comment) {
+    return { type: userConstants.COMMENT_DELETE_SUCCESS, comment };
+  }
+  function failure(error) {
+    return { type: userConstants.COMMENT_DELETE_FAILURE, error };
+  }
+}
 function create(user) {
   return dispatch => {
     dispatch(request(user));
 
     userService.create(user).then(
+      newUser => dispatch(success(newUser)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request(user) {
+    return { type: userConstants.CREATE_REQUEST, user };
+  }
+  function success(user) {
+    return { type: userConstants.CREATE_SUCCESS, user };
+  }
+  function failure(error) {
+    return { type: userConstants.CREATE_FAILURE, error };
+  }
+}
+function createRequest(user) {
+  return dispatch => {
+    dispatch(request(user));
+
+    userService.createRequest(user).then(
       newUser => dispatch(success(newUser)),
       error => dispatch(failure(error.toString()))
     );
@@ -68,6 +133,26 @@ function getAll() {
     return { type: userConstants.GETALL_FAILURE, error };
   }
 }
+function getRequests() {
+  return dispatch => {
+    dispatch(request());
+
+    userService.getRequests().then(
+      requests => dispatch(success(requests)),
+      error => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.REQUESTS_GETALL_REQUEST };
+  }
+  function success(requests) {
+    return { type: userConstants.REQUESTS_GETALL_SUCCESS, requests };
+  }
+  function failure(error) {
+    return { type: userConstants.REQUESTS_GETALL_FAILURE, error };
+  }
+}
 function getById(id) {
   return dispatch => {
     dispatch(request(id));
@@ -108,4 +193,8 @@ function _delete(id) {
   function failure(id, error) {
     return { type: userConstants.DELETE_FAILURE, id, error };
   }
+}
+
+function removeRequest(id) {
+  return { type: userConstants.REMOVE_REQUEST, id };
 }

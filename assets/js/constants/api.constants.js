@@ -1,3 +1,7 @@
 export const ROUTES = {
-  USERS: "/users"
+  USERS: "/users",
+  REQUEST: "/request",
+
+  COMMENTS: "/comments",
+  MEMBERSHIPS: "/memberships"
 };

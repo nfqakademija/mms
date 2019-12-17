@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { userActions } from "./actions/user.actions";
+import { membershipActions } from "./actions/membership.actions";
 
 import { store } from "./core/store";
 import Home from "./pages/Home";
-import Users from "./pages/Users";
+import Memberships from "./pages/Memberships";
 import "..//css/app.scss";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Requests from "./pages/Requests";
@@ -14,14 +15,14 @@ import Request from "./pages/Request";
 import Login from "./pages/Login";
 
 function App() {
-  const admin = useSelector(state => state.admin);
+  const loggedIn = useSelector(state => state.auth.loggedIn);
   const dispatch = useDispatch();
-
   useEffect(() => {
-    console.log(process.env);
-    dispatch(userActions.getAll());
-  }, []);
-  if (admin.loggedIn) {
+    dispatch(userActions.getRequests());
+    dispatch(membershipActions.getAll());
+  }, [loggedIn]);
+
+  if (loggedIn) {
     return (
       <div>
         <BrowserRouter>
@@ -29,10 +30,7 @@ function App() {
             <Route path="/requests">
               <Requests />
             </Route>
-
-            <Route path="/users" component={Users} />
-
-            <Route component={Home} />
+            <Route component={Memberships} />
           </Switch>
         </BrowserRouter>
       </div>
