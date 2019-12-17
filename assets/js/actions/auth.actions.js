@@ -35,5 +35,6 @@ function login(username, password) {
 function logout() {
   removeAuthorizationHeader();
   localStorage.removeItem("token");
+
   return { type: "LOGOUT" };
 }
