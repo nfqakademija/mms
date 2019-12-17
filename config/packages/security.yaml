@@ -29,6 +29,11 @@ security:
             stateless: true
             anonymous: true
 
+        request:
+            pattern:  ^/api/request
+            stateless: true
+            anonymous: true
+
         register:
             pattern: ^/api/registration
             stateless: true
