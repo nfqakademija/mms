@@ -229,7 +229,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/api/request", defaults={"_format"="json"}, name="users_request", methods="PUT")
+     * @Route("/api/request", defaults={"_format"="json"}, name="users_request", methods="POST")
      */
     public function usersRequest(Request $request, UserRepository $userRepository, ValidatorInterface $validator)
     {
@@ -252,7 +252,7 @@ class UsersController extends AbstractController
         $user->setName($request->get('name'));
         $user->setSurname($request->get('surname'));
         $user->setEmail($request->get('email'));
-        $user->setApprove($request->get('approve'));
+        $user->setApprove(0);
         $user->setUrl($request->get('url'));
         $user->setFileName($request->get('file_name'));
         $user->setLinkedin($request->get('linkedin'));
