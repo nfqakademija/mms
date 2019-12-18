@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { userActions } from "./actions/user.actions";
 import { membershipActions } from "./actions/membership.actions";
+import { authActions } from "./actions/auth.actions";
 
 import { store } from "./core/store";
 import Home from "./pages/Home";
@@ -17,12 +18,11 @@ import Login from "./pages/Login";
 function App() {
   const loggedIn = useSelector(state => state.auth.loggedIn);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(userActions.getRequests());
-    dispatch(membershipActions.getAll());
-  }, [loggedIn]);
 
   if (loggedIn) {
+    dispatch(userActions.getRequests());
+    dispatch(membershipActions.getAll());
+
     return (
       <div>
         <BrowserRouter>
@@ -36,6 +36,8 @@ function App() {
       </div>
     );
   } else {
+    dispatch(authActions.reauthenticate());
+
     return (
       <div>
         <div className="container">

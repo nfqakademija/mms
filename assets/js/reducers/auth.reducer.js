@@ -21,6 +21,21 @@ export function auth(state = { loggedIn: false, token: "" }, action) {
         loading: false,
         loggedIn: false
       };
+    case authConstants.REAUTHENTICATE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: true,
+        token: action.token
+      };
+    case authConstants.REAUTHENTICATE_FAILURE:
+      return {
+        ...state,
+        token: "",
+        loading: false,
+        loggedIn: false
+      };
+
     case authConstants.LOGOUT:
       return {
         ...state,
@@ -28,6 +43,7 @@ export function auth(state = { loggedIn: false, token: "" }, action) {
         loading: false,
         loggedIn: false
       };
+
     default:
       return state;
   }
