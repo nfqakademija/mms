@@ -46,7 +46,7 @@ export default function RequestForm() {
     ) {
       setAlertType("success");
       setOpen(true);
-      setAlert("Užklausa nusiūsta. Apie patvirtinimą gausite El.Laišką");
+      setAlert("Užklausa nusiųsta. Apie patvirtinimą gausite El.Laišką");
       setState({
         checkbox: false,
         name: "",
@@ -61,7 +61,7 @@ export default function RequestForm() {
     } else {
       setAlertType("error");
       setOpen(true);
-      setAlert("Neteisingai suvesti dyomenys!");
+      setAlert("Neteisingai suvesti duomenys! (Email formatas svarbu!)");
     }
   };
 
@@ -74,7 +74,7 @@ export default function RequestForm() {
         variant={alertType}
         open={open}
         onClose={() => setOpen(false)}
-        autoHideDuration={2000}
+        autoHideDuration={3000}
       />
       <Typography variant="h4" style={{ marginBottom: "30px" }}>
         Paraiška įstoti
