@@ -5,11 +5,9 @@ import { authActions } from "../actions/auth.actions";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
+import DescriptionIcon from "@material-ui/icons/Description";
 import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -18,13 +16,11 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
-import MailOutlineOutlinedIcon from "@material-ui/icons/MailOutlineOutlined";
-import AssessmentOutlinedIcon from "@material-ui/icons/AssessmentOutlined";
 import Badge from "@material-ui/core/Badge";
+import { userService } from "../services/user.service";
 
 const drawerWidth = 240;
 
@@ -137,17 +133,6 @@ export default function SideNav() {
         </div>
         <Divider />
         <List>
-          {/* <ListItem
-            button
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            <ListItemIcon>
-              <AssessmentOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Pagrindinis" />
-          </ListItem> */}
           <ListItem
             button
             onClick={() => {
@@ -175,6 +160,17 @@ export default function SideNav() {
               )}
             </ListItemIcon>
             <ListItemText primary="Užklausos" />
+          </ListItem>
+          <ListItem
+            button
+            onClick={() => {
+              userService.exportUsers();
+            }}
+          >
+            <ListItemIcon>
+              <DescriptionIcon />
+            </ListItemIcon>
+            <ListItemText primary="Eksportuoti Narius" />
           </ListItem>
         </List>
         <Divider />

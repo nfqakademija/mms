@@ -1,5 +1,6 @@
 import api from "../core/api";
 import { ROUTES } from "../constants/api.constants";
+import moment from "moment";
 
 export const userService = {
   create,
@@ -9,7 +10,8 @@ export const userService = {
   addComment,
   deleteComment,
   getRequests,
-  createRequest
+  createRequest,
+  exportUsers
 };
 async function getAll() {
   return await api()
@@ -147,6 +149,18 @@ async function createRequest(user) {
     })
     .catch(error => {
       return Promise.reject(error);
+    });
+}
+async function exportUsers() {
+  const FileDownload = require("js-file-download");
+
+  return await api()
+    .get("/export/users")
+    .then(response => {
+      FileDownload(
+        response.data,
+        `Users_Exported_At:${moment().format("YYYY-MM-DD.HH:mm:ss")}.csv`
+      );
     });
 }
 async function update(user) {

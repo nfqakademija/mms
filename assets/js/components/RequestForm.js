@@ -1,8 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../actions/user.actions";
-import { makeStyles } from "@material-ui/core/styles";
-
 import {
   Container,
   Card,
@@ -48,7 +46,7 @@ export default function RequestForm() {
     ) {
       setAlertType("success");
       setOpen(true);
-      setAlert("Užklausa nusiūsta. Apie patvirtinimą gausite E.Laišką");
+      setAlert("Užklausa nusiųsta. Apie patvirtinimą gausite El.Laišką");
       setState({
         checkbox: false,
         name: "",
@@ -63,7 +61,7 @@ export default function RequestForm() {
     } else {
       setAlertType("error");
       setOpen(true);
-      setAlert("Neteisingai suvesti dyomenys!");
+      setAlert("Neteisingai suvesti duomenys! (Email formatas svarbu!)");
     }
   };
 
@@ -76,7 +74,7 @@ export default function RequestForm() {
         variant={alertType}
         open={open}
         onClose={() => setOpen(false)}
-        autoHideDuration={2000}
+        autoHideDuration={3000}
       />
       <Typography variant="h4" style={{ marginBottom: "30px" }}>
         Paraiška įstoti
