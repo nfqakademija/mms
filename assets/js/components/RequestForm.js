@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import DescriptionIcon from "@material-ui/icons/Description";
 import { userActions } from "../actions/user.actions";
+import { makeStyles } from "@material-ui/core/styles";
 
 import {
   Container,
@@ -10,9 +10,7 @@ import {
   Typography,
   TextField,
   Button,
-  Paper,
-  Chip,
-  FormControl,
+  Snackbar,
   FormControlLabel,
   Checkbox
 } from "@material-ui/core";
@@ -20,9 +18,11 @@ import {
 export default function RequestForm() {
   const dispatch = useDispatch();
 
-  function handleDelete() {
-    alert("delete");
-  }
+  const [open, setOpen] = React.useState(false);
+  const [alertType, setAlertType] = React.useState("success");
+
+  const [alert, setAlert] = React.useState("");
+
   const [state, setState] = React.useState({
     checkbox: false,
     name: "",
@@ -40,15 +40,44 @@ export default function RequestForm() {
     setState({ ...state, [name]: event.target.checked });
   };
   const handleSubmit = () => {
-    if (state.name && state.surname && state.email && state.mobilePhone) {
+    if (
+      state.name &&
+      state.surname &&
+      /.+@.+\.[A-Za-z]+$/.test(state.email) &&
+      state.mobilePhone
+    ) {
+      setAlertType("success");
+      setOpen(true);
+      setAlert("Užklausa nusiūsta. Apie patvirtinimą gausite E.Laišką");
+      setState({
+        checkbox: false,
+        name: "",
+        surname: "",
+        email: "",
+        mobilePhone: "",
+        linkedIn: "",
+        url: "",
+        enterText: ""
+      });
       dispatch(userActions.createRequest(state));
     } else {
-      alert("Not good enough");
+      setAlertType("error");
+      setOpen(true);
+      setAlert("Neteisingai suvesti dyomenys!");
     }
   };
 
   return (
     <Container>
+      <Snackbar
+        color="red"
+        vertical="top"
+        message={alert}
+        variant={alertType}
+        open={open}
+        onClose={() => setOpen(false)}
+        autoHideDuration={2000}
+      />
       <Typography variant="h4" style={{ marginBottom: "30px" }}>
         Paraiška įstoti
       </Typography>

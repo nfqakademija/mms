@@ -123,7 +123,7 @@ async function createRequest(user) {
   const surname = user.surname;
   const email = user.email;
   const mobilePhone = user.mobilePhone;
-  const enterText = user.enterText;
+  const entryText = user.enterText;
   const url = user.url;
   const linkedIn = user.linkedIn;
 
@@ -134,7 +134,7 @@ async function createRequest(user) {
         surname,
         email,
         mobilePhone,
-        enterText,
+        entryText,
         url,
         linkedIn
       }

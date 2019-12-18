@@ -30,7 +30,6 @@ export default function EntryMessageDialog(props) {
       >
         <DialogTitle id="form-dialog-title">Žinutė</DialogTitle>
         <DialogContent>
-          {console.log(props)}
           <DialogContentText>{props.message}</DialogContentText>
         </DialogContent>
         <DialogActions>

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import MaterialTable from "material-table";
 import API from "../core/api";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { membershipActions } from "../actions/membership.actions";
+import { userActions } from "../actions/user.actions";
+
 import Button from "@material-ui/core/Button";
 
 import IconButton from "@material-ui/core/IconButton";
@@ -24,8 +26,20 @@ import {
 //TODO Loading and alert banners//
 
 export default function MembershipsTable() {
-  const [open, setOpen] = React.useState(false);
-
+  const dispatch = useDispatch();
+  const memberships = useSelector(state => state.memberships);
+  const [open, setOpen] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [commentUser, setCommentUser] = useState(null);
+  const handleAddComment = () => {
+    if (commentUser && commentText) {
+      const userId = commentUser;
+      const text = commentText;
+      dispatch(userActions.addComment({ userId, text }));
+      setComment({ userId: null, text: "" });
+      handleClose();
+    }
+  };
   const handleOpen = () => {
     setOpen(true);
   };
@@ -33,14 +47,19 @@ export default function MembershipsTable() {
   const handleClose = () => {
     setOpen(false);
   };
-  const memberships = useSelector(state => state.memberships);
-  const dispatch = useDispatch();
+
   const columns = [
     { title: "Vardas", field: "user.name" },
     { title: "Pavarde", field: "user.surname" },
     { title: "El. Pastas", field: "user.email" },
     { title: "Telefono Nr.", field: "user.mobilePhone" },
-    { title: "Statusas", field: "status" },
+    { title: "Tipas", field: "user.role" },
+
+    {
+      title: "Statusas",
+      field: "status",
+      lookup: { active: "active", suspended: "suspended" }
+    },
     { title: "Galioja iki", field: "expiredAt", type: "date" }
   ];
 
@@ -57,6 +76,8 @@ export default function MembershipsTable() {
           {/* <DialogContentText>Komentaras:</DialogContentText> */}
           <TextField
             id="standard-multiline-flexible"
+            value={commentText}
+            onChange={() => setCommentText(event.target.value)}
             label="Komentaras:"
             multiline
             fullWidth
@@ -66,14 +87,15 @@ export default function MembershipsTable() {
           <Button onClick={handleClose} color="primary">
             Atšaukti
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleAddComment} color="primary">
             Pridėti
           </Button>
         </DialogActions>
       </Dialog>
       <MaterialTable
         options={{
-          paging: false
+          paging: false,
+          addRowPosition: "first"
         }}
         title="Vartotojai"
         columns={columns}
@@ -84,8 +106,12 @@ export default function MembershipsTable() {
 
             tooltip: "Show comments",
             render: rowData => {
+              setCommentUser(rowData.id);
               return (
                 <div>
+                  <Typography variant="body1" align="center">
+                    Komentarų nėra
+                  </Typography>
                   <List>
                     {rowData.user.comments.map(com => (
                       <div key={com.id}>
@@ -98,12 +124,11 @@ export default function MembershipsTable() {
                       </div>
                     ))}
                     <ListItem align="center">
-                      <IconButton onClick={handleOpen}>
+                      {/* <IconButton onClick={handleOpen}>
                         <AddIcon />
-                      </IconButton>
+                      </IconButton> */}
                     </ListItem>
                   </List>
-                  {console.log(rowData.user.comments)}
                 </div>
               );
             }
