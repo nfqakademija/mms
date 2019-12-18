@@ -1,9 +1,10 @@
 import { authConstants } from "../constants/auth.constants";
 import { authService } from "../services/auth.service";
 import { setAuthorizationHeader, removeAuthorizationHeader } from "../core/api";
-export const adminActions = {
+export const authActions = {
   login,
-  logout
+  logout,
+  reauthenticate
 };
 
 function login(username, password) {
@@ -31,7 +32,17 @@ function login(username, password) {
     return { type: authConstants.LOGIN_FAILURE, error };
   }
 }
-
+//TODO: Back-end reauthenticate method for renewing token
+function reauthenticate() {
+  console.log(localStorage.getItem("token"));
+  if (localStorage.getItem("token") === null) {
+    return { type: authConstants.REAUTHENTICATE_FAILURE };
+  } else {
+    const token = localStorage.getItem("token");
+    setAuthorizationHeader(token);
+    return { type: authConstants.REAUTHENTICATE_SUCCESS, token };
+  }
+}
 function logout() {
   removeAuthorizationHeader();
   localStorage.removeItem("token");

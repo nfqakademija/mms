@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminActions } from "../actions/auth.actions";
+import { authActions } from "../actions/auth.actions";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -20,7 +20,7 @@ export default function LoginForm() {
   const dispatch = useDispatch();
 
   function login() {
-    dispatch(adminActions.login(userName, password));
+    dispatch(authActions.login(userName, password));
   }
 
   return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { adminActions } from "../actions/auth.actions";
+import { authActions } from "../actions/auth.actions";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -78,7 +78,7 @@ export default function SideNav() {
   const dispatch = useDispatch();
 
   function logout() {
-    dispatch(adminActions.logout());
+    dispatch(authActions.logout());
   }
   let history = useHistory();
   const classes = useStyles();
