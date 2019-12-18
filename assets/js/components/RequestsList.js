@@ -45,7 +45,7 @@ export default function RequestsList() {
             <TableCell>Telefono Nr.</TableCell>
             <TableCell>LinkedIn </TableCell>
             <TableCell>Portfolio</TableCell>
-            {/* <TableCell>Žinutė</TableCell> */}
+            <TableCell>Žinutė</TableCell>
 
             <TableCell></TableCell>
           </TableRow>
@@ -69,9 +69,9 @@ export default function RequestsList() {
                 </a>
               </TableCell>
 
-              {/* <TableCell>
-                <EntryMessageDialog message={request.entryText} /> 
-              </TableCell> */}
+              <TableCell>
+                <EntryMessageDialog message={request.entryText} />
+              </TableCell>
               <TableCell>
                 <IconButton
                   onClick={() => approveRequest(request.id)}
