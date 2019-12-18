@@ -32,7 +32,6 @@ function login(username, password) {
     return { type: authConstants.LOGIN_FAILURE, error };
   }
 }
-//TODO: Back-end reauthenticate method for renewing token
 function reauthenticate() {
   console.log(localStorage.getItem("token"));
   if (localStorage.getItem("token") === null) {
