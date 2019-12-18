@@ -4,8 +4,6 @@ export const authService = {
 };
 
 async function login(Username, Password) {
-  console.log(Username, Password);
-
   return await api()
     .post("/login_check", { username: Username, password: Password })
     .then(response => {

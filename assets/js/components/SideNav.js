@@ -176,12 +176,6 @@ export default function SideNav() {
             </ListItemIcon>
             <ListItemText primary="Užklausos" />
           </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <MailOutlineOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Laiškai" />
-          </ListItem>
         </List>
         <Divider />
         <List>

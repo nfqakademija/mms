@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { userActions } from "../actions/user.actions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -9,6 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 export default function NewComment() {
   const [open, setOpen] = React.useState(false);
+  const [comment, setComment] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -17,7 +20,11 @@ export default function NewComment() {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleAddComment = () => {
+    if (comment) {
+      useDispatch(userActions.addComment(comment));
+    }
+  };
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -33,10 +40,12 @@ export default function NewComment() {
           <DialogContentText>Iveskite Naują Komentarą</DialogContentText>
           <TextField
             autoFocus
+            value={comment}
+            onChange={() => setComment(target.value)}
             margin="dense"
             id="name"
-            label="Email Address"
-            type="email"
+            label="Komentaras"
+            type="text"
             fullWidth
           />
         </DialogContent>
@@ -44,7 +53,7 @@ export default function NewComment() {
           <Button onClick={handleClose} color="primary">
             Atšaukti
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleAddComment} color="primary">
             Pridėti
           </Button>
         </DialogActions>

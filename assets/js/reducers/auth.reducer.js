@@ -10,6 +10,7 @@ export function auth(state = { loggedIn: false, token: "" }, action) {
     case authConstants.LOGIN_SUCCESS:
       return {
         ...state,
+        loading: false,
         loggedIn: true,
         token: action.token
       };
@@ -24,6 +25,7 @@ export function auth(state = { loggedIn: false, token: "" }, action) {
       return {
         ...state,
         token: "",
+        loading: false,
         loggedIn: false
       };
     default:

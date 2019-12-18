@@ -70,6 +70,7 @@ export function users(
       // remove deleted user from state
       return {
         ...state,
+        requests: state.requests.filter(user => user.id !== action.id),
         items: state.items.filter(user => user.id !== action.id)
       };
     case userConstants.DELETE_FAILURE:
@@ -128,7 +129,7 @@ export function users(
       return {
         ...state,
         requests: state.requests.filter(user => user.id !== action.id),
-        requestsCount: action.requests.length
+        requestsCount: state.requests.length - 1
       };
     default:
       return state;
