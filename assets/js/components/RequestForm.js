@@ -1,8 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../actions/user.actions";
-import { makeStyles } from "@material-ui/core/styles";
-
 import {
   Container,
   Card,
@@ -48,7 +46,7 @@ export default function RequestForm() {
     ) {
       setAlertType("success");
       setOpen(true);
-      setAlert("Užklausa nusiūsta. Apie patvirtinimą gausite E.Laišką");
+      setAlert("Užklausa nusiūsta. Apie patvirtinimą gausite El.Laišką");
       setState({
         checkbox: false,
         name: "",
