@@ -33,7 +33,6 @@ function login(username, password) {
   }
 }
 function reauthenticate() {
-  console.log(localStorage.getItem("token"));
   if (localStorage.getItem("token") === null) {
     return { type: authConstants.REAUTHENTICATE_FAILURE };
   } else {
